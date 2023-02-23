@@ -8,8 +8,8 @@ class RouterApp {
         settings: routeSettings,
         builder: (BuildContext context) {
           switch (routeSettings.name) {
-            case AuthScreen.routeName:
-              return const AuthScreen();
+            case LoginScreen.routeName:
+              return const LoginScreen();
             default:
               return ExceptionView(routeName: routeSettings.name!);
           }
