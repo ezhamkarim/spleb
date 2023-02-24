@@ -32,4 +32,7 @@ class SizedBoxHelper {
   static const sizedboxH16 = SizedBox(
     height: 16,
   );
+  static const sizedboxH32 = SizedBox(
+    height: 32,
+  );
 }

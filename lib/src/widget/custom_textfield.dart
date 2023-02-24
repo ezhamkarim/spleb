@@ -13,13 +13,14 @@ class CustomTextField extends StatefulWidget {
       required this.isEnabled,
       this.keyboardType,
       this.onTap,
-      this.validator});
+      this.validator,
+      this.color});
   final TextEditingController controller;
   final String hintText;
   final bool isObscure;
   final bool isEnabled;
   final TextInputType? keyboardType;
-
+  final Color? color;
   final void Function()? onTap;
   final String? Function(String?)? validator;
   @override
@@ -45,12 +46,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
             widget.hintText,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: widget.color ?? Colors.white),
           ),
         ),
         const SizedBox(height: 8),
         TextFormField(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           onTap: widget.onTap,
           controller: widget.controller,
           validator: widget.validator ??
@@ -94,9 +94,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
               disabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black.withOpacity(0.5), width: 2),
                   borderRadius: const SmoothBorderRadius.all(SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 2),
-                  borderRadius: SmoothBorderRadius.all(SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: widget.color ?? Colors.white, width: 2),
+                  borderRadius: const SmoothBorderRadius.all(SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
               focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.red.shade800, width: 2),
                   borderRadius: const SmoothBorderRadius.all(SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
