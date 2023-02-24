@@ -1,5 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:spleb/src/helper/helper.dart';
+import 'package:spleb/src/helper/log_helper.dart';
 
 class AuthService {
   //TODO implement all service 9:00 AM

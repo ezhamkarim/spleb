@@ -11,6 +11,7 @@ environment:
 
 dependencies:
   cloud_firestore: ^4.4.3
+  figma_squircle: ^0.5.3
   firebase_auth: ^4.2.9
   firebase_core: ^2.7.0
   firebase_storage: ^11.0.14
@@ -19,6 +20,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.1.15
+  font_awesome_flutter: ^10.4.0
   path_provider: ^2.0.13
   provider: ^6.0.5
 
@@ -57,3 +59,24 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+  fonts:
+    - family: "Inter"
+      fonts:
+        - asset: assets/fonts/Inter-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Inter-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Inter-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Inter-Black.ttf
+          weight: 900
