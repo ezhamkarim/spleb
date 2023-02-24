@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/root/providers.dart';
 import 'package:spleb/src/root/router_app.dart';
+import 'package:spleb/src/root/services.dart';
 
 import 'settings/settings_controller.dart';
 
@@ -26,7 +28,13 @@ class MyApp extends StatelessWidget {
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MultiProvider(
-          providers: [ChangeNotifierProvider(create: (_) => RootProvider())],
+          providers: [
+            ChangeNotifierProvider(create: (_) => RootProvider()),
+            ChangeNotifierProvider<AuthService>(
+              create: (_) => AuthService(FirebaseAuth.instance),
+            ),
+            StreamProvider<User?>(create: (_) => context.read<AuthService>().authStateChanges, initialData: null)
+          ],
           child: MaterialApp(
             // Providing a restorationScopeId allows the Navigator built by the
             // MaterialApp to restore the navigation stack when a user leaves and

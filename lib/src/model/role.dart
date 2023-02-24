@@ -15,4 +15,10 @@ class Role with BaseModel {
       'name': name,
     };
   }
+
+  @override
+  bool operator ==(Object other) => other is Role && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
