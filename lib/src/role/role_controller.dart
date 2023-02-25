@@ -1,12 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:spleb/src/database/database_service.dart';
 import 'package:spleb/src/enum/viewstate_enum.dart';
 import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/role.dart';
-import 'package:spleb/src/root/providers.dart';
 
-class RoleController extends RootProvider with DatabaseService {
-  // final RoleService _roleService = RoleService();
+class RoleController extends ChangeNotifier with DatabaseService {
+  ViewState _viewState = ViewState.idle;
+
+  set setState(ViewState vs) {
+    _viewState = vs;
+    notifyListeners();
+  }
+
+  ViewState get viewState => _viewState;
   Future<void> create(Role role) async {
     try {
       setState = ViewState.busy;

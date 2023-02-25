@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:spleb/src/database/database.dart';
 import 'package:spleb/src/enum/viewstate_enum.dart';
 import 'package:spleb/src/helper/log_helper.dart';
+import 'package:spleb/src/model/models.dart';
 
-class AuthService with ChangeNotifier {
-  //TODO implement all service 9:00 AM
+class AuthService extends DatabaseService with ChangeNotifier {
   final FirebaseAuth _firebaseAuth;
 
   AuthService(this._firebaseAuth);
@@ -38,7 +40,44 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  Future<void> signUp() async {}
+  Future<void> signUp(SplebUser splebUser) async {
+    try {
+      setState = ViewState.busy;
+
+      await userRegisteredCollection.doc().set(splebUser.toRegister(), SetOptions(merge: true));
+
+      setState = ViewState.idle;
+      return;
+    } on FirebaseException catch (e) {
+      setState = ViewState.idle;
+      logError('Firebase Error $e');
+      throw e.toString();
+    } catch (e) {
+      setState = ViewState.idle;
+      logError('Other Error $e');
+
+      throw e.toString();
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      setState = ViewState.busy;
+      await _firebaseAuth.signOut();
+
+      setState = ViewState.idle;
+      return;
+    } on FirebaseException catch (e) {
+      setState = ViewState.idle;
+      logError('Firebase Error $e');
+      throw e.toString();
+    } catch (e) {
+      setState = ViewState.idle;
+      logError('Other Error $e');
+
+      throw e.toString();
+    }
+  }
 
   Future<void> deleteUser() async {}
 

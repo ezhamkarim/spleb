@@ -7,14 +7,14 @@ import 'package:spleb/src/widget/custom_widget.dart';
 //TODO implement login screen 10:30 AM
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  static const routeName = '/';
+  static const routeName = '/login';
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailTextController = TextEditingController();
-  final passwordTextController = TextEditingController();
+  final emailTextController = TextEditingController(text: 'admin@spleb.com');
+  final passwordTextController = TextEditingController(text: 'Spleb1234');
 
   final _formKey = GlobalKey<FormState>();
   @override
@@ -59,34 +59,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        CustomTextField(
-                          controller: emailTextController,
-                          hintText: 'Email',
-                          isObscure: false,
-                          isEnabled: true,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBoxHelper.sizedboxH16,
-                        CustomTextField(
-                          controller: passwordTextController,
-                          hintText: 'Password',
-                          isObscure: true,
-                          isEnabled: true,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                        SizedBoxHelper.sizedboxH16,
-                        TextButton(
-                            onPressed: () {
-                              // Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                            },
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                        SizedBoxHelper.sizedboxH16,
-                      ],
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            controller: emailTextController,
+                            hintText: 'Email',
+                            isObscure: false,
+                            isEnabled: true,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBoxHelper.sizedboxH16,
+                          CustomTextField(
+                            controller: passwordTextController,
+                            hintText: 'Password',
+                            isObscure: true,
+                            isEnabled: true,
+                            keyboardType: TextInputType.visiblePassword,
+                          ),
+                          SizedBoxHelper.sizedboxH16,
+                          TextButton(
+                              onPressed: () {
+                                // Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                              },
+                              child: const Text(
+                                'Register',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                          SizedBoxHelper.sizedboxH16,
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -101,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Expanded(
                       child: CustomButton(
+                          viewState: authService.viewState,
                           titleButton: 'Login',
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {

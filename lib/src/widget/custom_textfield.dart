@@ -2,6 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/style/style.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -49,7 +50,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: TextStyle(color: widget.color ?? Colors.white),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBoxHelper.sizedboxH8,
         TextFormField(
           onTap: widget.onTap,
           controller: widget.controller,

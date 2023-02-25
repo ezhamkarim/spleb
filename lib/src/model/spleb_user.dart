@@ -15,16 +15,30 @@ class SplebUser implements BaseModel {
 
   final String noPhone;
 
+  final String? password;
   SplebUser(
       {required this.id,
       required this.userName,
       required this.kumpulan,
       required this.role,
       required this.email,
-      required this.noPhone});
+      required this.noPhone,
+      this.password});
 
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id, 'userName': userName, 'kumpulan': kumpulan, 'role': role, 'email': email, 'noPhone': noPhone};
+    return {'id': id, 'userName': userName, 'kumpulan': kumpulan, 'role': role.toMap(), 'email': email, 'noPhone': noPhone};
+  }
+
+  Map<String, dynamic> toRegister() {
+    return {
+      'id': id,
+      'userName': userName,
+      'kumpulan': kumpulan,
+      'role': role.toMap(),
+      'email': email,
+      'noPhone': noPhone,
+      'password': password
+    };
   }
 }

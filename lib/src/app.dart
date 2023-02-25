@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/providers.dart';
 import 'package:spleb/src/root/router_app.dart';
 import 'package:spleb/src/root/services.dart';
@@ -24,18 +25,19 @@ class MyApp extends StatelessWidget {
     //
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
-    return AnimatedBuilder(
-      animation: settingsController,
-      builder: (BuildContext context, Widget? child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => RootProvider()),
-            ChangeNotifierProvider<AuthService>(
-              create: (_) => AuthService(FirebaseAuth.instance),
-            ),
-            StreamProvider<User?>(create: (_) => context.read<AuthService>().authStateChanges, initialData: null)
-          ],
-          child: MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RootProvider()),
+        ChangeNotifierProvider(create: (_) => RoleController()),
+        ChangeNotifierProvider<AuthService>(
+          create: (_) => AuthService(FirebaseAuth.instance),
+        ),
+        StreamProvider(create: (context) => context.read<AuthService>().authStateChanges, initialData: null),
+      ],
+      child: AnimatedBuilder(
+        animation: settingsController,
+        builder: (BuildContext context, Widget? child) {
+          return MaterialApp(
             // Providing a restorationScopeId allows the Navigator built by the
             // MaterialApp to restore the navigation stack when a user leaves and
             // returns to the app after it has been killed while running in the
@@ -72,9 +74,9 @@ class MyApp extends StatelessWidget {
             // Define a function to handle named routes in order to support
             // Flutter web url navigation and deep linking.
             onGenerateRoute: RouterApp.onGenerateRoute,
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
