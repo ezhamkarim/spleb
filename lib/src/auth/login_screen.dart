@@ -39,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'SPLEB',
@@ -59,6 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
+                    SizedBoxHelper.sizedboxH32,
+                    SizedBoxHelper.sizedboxH32,
                     Form(
                       key: _formKey,
                       child: Column(
