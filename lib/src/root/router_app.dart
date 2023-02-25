@@ -19,6 +19,8 @@ class RouterApp {
               return const DaftarRole();
             case SenaraiRole.routeName:
               return const SenaraiRole();
+            case DaftarProjek.routeName:
+              return const DaftarProjek();
             default:
               return ExceptionView(routeName: routeSettings.name!);
           }

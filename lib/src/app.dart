@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:spleb/src/project/project_controller.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/providers.dart';
 import 'package:spleb/src/root/router_app.dart';
 import 'package:spleb/src/root/services.dart';
+import 'package:spleb/src/user/user_controller.dart';
 
 import 'settings/settings_controller.dart';
 
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RootProvider()),
+        ChangeNotifierProvider(create: (_) => UserController()),
         ChangeNotifierProvider(create: (_) => RoleController()),
         ChangeNotifierProvider(create: (_) => ProjectController()),
         ChangeNotifierProvider<AuthService>(

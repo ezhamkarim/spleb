@@ -31,6 +31,11 @@ class _IndexScreenState extends State<IndexScreen> {
               onPressed: () async {
                 await authService.logout();
               }),
+          CustomButton(
+              titleButton: 'Register Project',
+              onPressed: () async {
+                Navigator.of(context).pushNamed(DaftarProjek.routeName);
+              }),
         ]),
       ),
     );
