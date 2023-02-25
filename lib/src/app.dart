@@ -7,7 +7,6 @@ import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/providers.dart';
 import 'package:spleb/src/root/router_app.dart';
 import 'package:spleb/src/root/services.dart';
-import 'package:spleb/src/user/user_controller.dart';
 
 import 'settings/settings_controller.dart';
 

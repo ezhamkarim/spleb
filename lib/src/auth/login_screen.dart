@@ -4,7 +4,6 @@ import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/root/services.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
-//TODO implement login screen 10:30 AM
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   static const routeName = '/login';
@@ -81,15 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             isEnabled: true,
                             keyboardType: TextInputType.visiblePassword,
                           ),
-                          SizedBoxHelper.sizedboxH16,
-                          TextButton(
-                              onPressed: () {
-                                // Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                              },
-                              child: const Text(
-                                'Register',
-                                style: TextStyle(color: Colors.white),
-                              )),
                           SizedBoxHelper.sizedboxH16,
                         ],
                       ),

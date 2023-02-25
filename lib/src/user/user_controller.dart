@@ -33,4 +33,14 @@ class UserController extends ChangeNotifier with DatabaseService {
       }).toList();
     });
   }
+
+  Stream<List<SplebUser>> readOne(String userId) {
+    return userCollection.where('id', isEqualTo: userId).snapshots().map((QuerySnapshot snapshot) {
+      return snapshot.docs.map((e) {
+        var data = e.data() as Map<String, dynamic>;
+        logInfo('Role : $data');
+        return SplebUser.fromJson(data);
+      }).toList();
+    });
+  }
 }

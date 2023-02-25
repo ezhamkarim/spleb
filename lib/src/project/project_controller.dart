@@ -53,6 +53,24 @@ class ProjectController extends ChangeNotifier with DatabaseService {
     });
   }
 
+  Stream<List<Projek>> readBelumDisahkan() {
+    return projectCollection.where('statusProjek', isEqualTo: 'Belum Disahkan').snapshots().map((QuerySnapshot snapshot) {
+      return snapshot.docs.map((e) {
+        var data = e.data() as Map<String, dynamic>;
+        return Projek.fromJson(data);
+      }).toList();
+    });
+  }
+
+  Stream<List<Projek>> readDisahkan() {
+    return projectCollection.where('statusProjek', isEqualTo: 'Disahkan').snapshots().map((QuerySnapshot snapshot) {
+      return snapshot.docs.map((e) {
+        var data = e.data() as Map<String, dynamic>;
+        return Projek.fromJson(data);
+      }).toList();
+    });
+  }
+
   Future<void> delete(String id) async {
     try {
       await projectCollection.doc(id).delete();
