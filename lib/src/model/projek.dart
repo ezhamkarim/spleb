@@ -3,7 +3,7 @@ import 'package:spleb/src/model/base_model.dart';
 class Projek implements BaseModel {
   String id;
   final String nama;
-  final String statusProjek;
+  String statusProjek;
   final String statusAktiviti;
   final String lokasiProjek;
   final String kumpulan;

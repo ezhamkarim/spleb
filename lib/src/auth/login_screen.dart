@@ -84,30 +84,49 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
+                    SizedBoxHelper.sizedboxH32,
+                    SizedBoxHelper.sizedboxH32,
+                    Row(
+                      children: [
+                        Expanded(
+                            child: CustomButton(
+                                viewState: authService.viewState,
+                                titleButton: 'Login',
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await authService
+                                        .signIn(emailTextController.text, passwordTextController.text)
+                                        .catchError((e) {
+                                      DialogHelper.dialogWithOutActionWarning(context, e.toString());
+                                    });
+                                  }
+                                })),
+                      ],
+                    )
                   ],
                 ),
               ),
             ),
           ),
-          Positioned(
-              bottom: 64,
-              left: 36,
-              right: 36,
-              child: Row(
-                children: [
-                  Expanded(
-                      child: CustomButton(
-                          viewState: authService.viewState,
-                          titleButton: 'Login',
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              await authService.signIn(emailTextController.text, passwordTextController.text).catchError((e) {
-                                DialogHelper.dialogWithOutActionWarning(context, e.toString());
-                              });
-                            }
-                          })),
-                ],
-              ))
+          // Positioned(
+          //     bottom: 64,
+          //     left: 36,
+          //     right: 36,
+          //     child: Row(
+          //       children: [
+          //         Expanded(
+          //             child: CustomButton(
+          //                 viewState: authService.viewState,
+          //                 titleButton: 'Login',
+          //                 onPressed: () async {
+          //                   if (_formKey.currentState!.validate()) {
+          //                     await authService.signIn(emailTextController.text, passwordTextController.text).catchError((e) {
+          //                       DialogHelper.dialogWithOutActionWarning(context, e.toString());
+          //                     });
+          //                   }
+          //                 })),
+          //       ],
+          //     ))
         ],
       ),
     );

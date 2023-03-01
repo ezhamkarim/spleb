@@ -21,6 +21,12 @@ class RouterApp {
               return const SenaraiRole();
             case DaftarProjek.routeName:
               return const DaftarProjek();
+            case ProjectScreenViewOnly.routeName:
+              var arg = routeSettings.arguments as ProjectScreenArg;
+              return ProjectScreenViewOnly(
+                projectId: arg.id,
+                userRole: arg.userRole,
+              );
             default:
               return ExceptionView(routeName: routeSettings.name!);
           }

@@ -73,6 +73,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             if (widget.hintText == 'No Kp') LengthLimitingTextInputFormatter(12),
             if (widget.keyboardType == TextInputType.number) FilteringTextInputFormatter.allow(RegExp('[0-9.,]'))
           ],
+          style: const TextStyle(color: Colors.black),
           obscureText: isObscure,
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(

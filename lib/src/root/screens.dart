@@ -7,3 +7,4 @@ export '../project/daftar_project_screen.dart';
 export '../home/home_screen.dart';
 export '../home/project_screen.dart';
 export '../home/tetapan_screen.dart';
+export '../project/project_screen.dart';

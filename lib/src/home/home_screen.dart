@@ -63,7 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       return SizedBox(
                                         height: 200,
                                         child: GestureDetector(
-                                            onTap: () {},
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(ProjectScreenViewOnly.routeName,
+                                                  arguments: ProjectScreenArg(projek.id, splebUser.role.name));
+                                            },
                                             child: Card(
                                               margin: const EdgeInsets.all(8),
                                               child: Padding(
