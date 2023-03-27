@@ -13,6 +13,8 @@ class ProjectScreenArg {
   ProjectScreenArg(this.id, this.userRole);
 }
 
+//TODO: Add buku log oshe dan kualiti
+
 class ProjectScreenViewOnly extends StatefulWidget {
   const ProjectScreenViewOnly({super.key, required this.projectId, required this.userRole});
   final String projectId;

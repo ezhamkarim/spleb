@@ -10,6 +10,7 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/user/user_controller.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
+//TODO: Add edit project
 class DaftarProjek extends StatefulWidget {
   const DaftarProjek({super.key});
   static const routeName = '/daftar-projek';
@@ -248,6 +249,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                                       statusProjek: 'Belum Disahkan',
                                       statusAktiviti: 'Belum Berlangsung',
                                       lokasiProjek: '',
+                                      aktivitiTerkini: '',
                                       kumpulan: kumpulanTextController.text,
                                       namaPIC: namaPIC!.userName,
                                       tarikhMula: tarikhMulaTextController.text,

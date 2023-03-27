@@ -5,6 +5,7 @@ class Projek implements BaseModel {
   final String nama;
   String statusProjek;
   final String statusAktiviti;
+  final String aktivitiTerkini;
   final String lokasiProjek;
   final String kumpulan;
   final String namaPIC;
@@ -16,6 +17,7 @@ class Projek implements BaseModel {
       required this.nama,
       required this.statusProjek,
       required this.statusAktiviti,
+      required this.aktivitiTerkini,
       required this.lokasiProjek,
       required this.kumpulan,
       required this.namaPIC,
@@ -32,7 +34,8 @@ class Projek implements BaseModel {
         kumpulan: json['kumpulan'],
         namaPIC: json['namaPIC'],
         tarikhMula: json['tarikhMula'],
-        tarikhAkhir: json['tarikhAkhir']);
+        tarikhAkhir: json['tarikhAkhir'],
+        aktivitiTerkini: json['aktivitiTerkini'] ?? '');
   }
   @override
   Map<String, dynamic> toMap() {
@@ -41,6 +44,7 @@ class Projek implements BaseModel {
       'nama': nama,
       'statusProjek': statusProjek,
       'statusAktiviti': statusAktiviti,
+      'aktivitiTerkini': aktivitiTerkini,
       'lokasiProjek': lokasiProjek,
       'kumpulan': kumpulan,
       'namaPIC': namaPIC,
