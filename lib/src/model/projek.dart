@@ -1,11 +1,11 @@
-import 'package:spleb/src/model/base_model.dart';
+import 'models.dart';
 
 class Projek implements BaseModel {
   String id;
   final String nama;
   String statusProjek;
-  final String statusAktiviti;
-  final String aktivitiTerkini;
+  String statusAktiviti;
+  final List<String> aktivitiTerkini;
   final String lokasiProjek;
   final String kumpulan;
   final String namaPIC;
@@ -25,6 +25,7 @@ class Projek implements BaseModel {
       required this.tarikhAkhir});
 
   factory Projek.fromJson(Map<String, dynamic> json) {
+    var aktivitiTerkiniList = json['aktivitiTerkini'] as List;
     return Projek(
         id: json['id'],
         nama: json['nama'],
@@ -35,7 +36,7 @@ class Projek implements BaseModel {
         namaPIC: json['namaPIC'],
         tarikhMula: json['tarikhMula'],
         tarikhAkhir: json['tarikhAkhir'],
-        aktivitiTerkini: json['aktivitiTerkini'] ?? '');
+        aktivitiTerkini: aktivitiTerkiniList.map((e) => e.toString()).toList());
   }
   @override
   Map<String, dynamic> toMap() {

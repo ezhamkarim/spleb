@@ -1,3 +1,4 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
@@ -25,6 +26,7 @@ class ProjectScreenViewOnly extends StatefulWidget {
 }
 
 class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
+  String? aktivitiSekarang;
   @override
   Widget build(BuildContext context) {
     var projectController = context.watch<ProjectController>();
@@ -102,8 +104,65 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                     ),
                                   ),
                                 ),
-                                if (widget.userRole == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Pengurus Projek')
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Aktiviti Sekarang',
+                                        ),
+                                      ),
+                                      SizedBoxHelper.sizedboxH8,
+                                      DropdownButtonHideUnderline(
+                                        child: DropdownButtonFormField<String>(
+                                            validator: (value) {
+                                              if (value == null) return 'Sila Pilih Status Aktiviti Sekarang';
+                                              return null;
+                                            },
+                                            hint: const Text(
+                                              'Aktiviti Sekarang',
+                                            ),
+                                            decoration: InputDecoration(
+                                                focusedErrorBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.red.shade800, width: 2),
+                                                    borderRadius: const SmoothBorderRadius.all(
+                                                        SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
+                                                disabledBorder: const OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.black, width: 2),
+                                                    borderRadius: SmoothBorderRadius.all(
+                                                        SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
+                                                enabledBorder: const OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.black, width: 2),
+                                                    borderRadius: SmoothBorderRadius.all(
+                                                        SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
+                                                errorBorder: const OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.red, width: 2),
+                                                    borderRadius: SmoothBorderRadius.all(
+                                                        SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6))),
+                                                focusedBorder: const OutlineInputBorder(
+                                                    borderSide: BorderSide(color: CustomColor.secondary, width: 2),
+                                                    borderRadius: SmoothBorderRadius.all(
+                                                        SmoothRadius(cornerRadius: 4, cornerSmoothing: 0.6)))),
+                                            value: projek.statusAktiviti,
+                                            items: projek.aktivitiTerkini
+                                                .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+                                                .toList(),
+                                            onChanged: (hehe) {
+                                              if (hehe == null) return;
+                                              setState(() {
+                                                projek.statusAktiviti = hehe;
+                                              });
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (widget.userRole == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
+                                  SizedBoxHelper.sizedboxH16,
+                                if (widget.userRole == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
                                   CustomButton(
                                       titleButton: 'Sahkan',
                                       onPressed: () {

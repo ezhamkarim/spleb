@@ -1,6 +1,4 @@
-import 'base_model.dart';
-
-import 'role.dart';
+import 'models.dart';
 
 class SplebUser implements BaseModel {
   final String id;

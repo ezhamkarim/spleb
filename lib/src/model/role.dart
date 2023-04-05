@@ -1,4 +1,4 @@
-import 'package:spleb/src/model/base_model.dart';
+import 'models.dart';
 
 class Role with BaseModel {
   String id;
