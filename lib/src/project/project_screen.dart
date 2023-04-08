@@ -176,7 +176,7 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                         });
                                       }),
                                 if (widget.userRole == 'Penyelia') SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Penyelia') CustomButton(titleButton: 'Tambah Buku Log', onPressed: () {}),
+                                if (widget.userRole == 'Penyelia') CustomButton(titleButton: 'Rekod Buku Log', onPressed: () {}),
                                 if (widget.userRole == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
                                 if (widget.userRole == 'Pengurus Projek')
                                   CustomButton(titleButton: 'Lihat Buku Log', onPressed: () {}),

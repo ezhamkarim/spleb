@@ -5,7 +5,6 @@ import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/project/project_screen.dart';
 import 'package:spleb/src/root/controllers.dart';
-//TODO: Add project screen list
 
 class ProjectScreen extends StatefulWidget {
   const ProjectScreen({super.key});
