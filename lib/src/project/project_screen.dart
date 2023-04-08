@@ -2,8 +2,10 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
+import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
+import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
@@ -30,6 +32,7 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
   @override
   Widget build(BuildContext context) {
     var projectController = context.watch<ProjectController>();
+    var userController = context.watch<UserController>();
     return StreamBuilder<List<Projek>>(
         stream: projectController.readOne(widget.projectId),
         builder: (context, snapshot) {
@@ -58,6 +61,30 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                 appBar: AppBar(
                   backgroundColor: CustomColor.primary,
                   title: Text(projek.nama),
+                  actions: [
+                    StreamBuilder<List<SplebUser>>(
+                        stream: userController.readOnebyName(projek.namaPIC),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var pics = snapshot.requireData;
+
+                            if (pics.isEmpty || pics.length > 2) return const Text('Error');
+
+                            var pic = pics.first;
+                            return TextButton(
+                                onPressed: () {
+                                  logInfo('Projek : ${projek.toMap()}');
+                                  Navigator.of(context)
+                                      .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(true, projek, pic));
+                                },
+                                child: const Text('Edit'));
+                          } else if (snapshot.hasError) {
+                            return Text('Error ${snapshot.error}');
+                          } else {
+                            return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                          }
+                        })
+                  ],
                 ),
                 body: SingleChildScrollView(
                     child: SizedBox(

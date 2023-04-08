@@ -2,6 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:spleb/src/auth/auth_wrapper.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
@@ -10,10 +11,19 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/user/user_controller.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
-//TODO: Add edit project
+class DaftarProjekArg {
+  final bool isEdit;
+  final Projek? projek;
+  final SplebUser? personInCharge;
+  DaftarProjekArg(this.isEdit, this.projek, this.personInCharge);
+}
+
 class DaftarProjek extends StatefulWidget {
-  const DaftarProjek({super.key});
+  const DaftarProjek({super.key, required this.isEdit, this.projek, this.personInCharge});
   static const routeName = '/daftar-projek';
+  final bool isEdit;
+  final Projek? projek;
+  final SplebUser? personInCharge;
   @override
   State<DaftarProjek> createState() => _DaftarProjekState();
 }
@@ -35,6 +45,29 @@ class _DaftarProjekState extends State<DaftarProjek> {
   List<String> statusAktivitis = [
     'Inside Plant',
   ];
+
+  @override
+  void initState() {
+    logInfo('IsEdit : ${widget.isEdit}, Projek obj : ${widget.projek}');
+    if (!widget.isEdit) return;
+
+    var projek = widget.projek;
+    if (projek == null) return;
+
+    namaTextController.text = projek.nama;
+    kumpulanTextController.text = projek.kumpulan;
+
+    tarikhAkhirTextController.text = projek.tarikhAkhir;
+
+    tarikhMulaTextController.text = projek.tarikhMula;
+
+    aktivitiSekarang = projek.statusAktiviti;
+
+    namaPIC = widget.personInCharge;
+
+    super.initState();
+  }
+
   void addStatusAktiviti() {
     setState(() {
       statusAktivitis.add(newAktivitiTextController.text);
@@ -50,7 +83,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
-          title: const Text('Daftar Role'),
+          title: widget.isEdit ? const Text('Kemaskini Projek') : const Text('Daftar Projek'),
         ),
         body: SizedBox(
           height: SizeConfig(context).scaledHeight(),
@@ -360,6 +393,29 @@ class _DaftarProjekState extends State<DaftarProjek> {
                           titleButton: 'Register',
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
+                              if (widget.isEdit) {
+                                var projekObjBeforeEdited = widget.projek;
+
+                                if (projekObjBeforeEdited == null) return;
+                                var project = Projek(
+                                    id: projekObjBeforeEdited.id,
+                                    nama: namaTextController.text,
+                                    statusProjek: projekObjBeforeEdited.statusProjek,
+                                    statusAktiviti: aktivitiSekarang ?? '',
+                                    lokasiProjek: '',
+                                    aktivitiTerkini: statusAktivitis,
+                                    kumpulan: kumpulanTextController.text,
+                                    namaPIC: namaPIC!.userName,
+                                    tarikhMula: tarikhMulaTextController.text,
+                                    tarikhAkhir: tarikhAkhirTextController.text);
+
+                                await projectController
+                                    .update(project)
+                                    .then((value) => Navigator.of(context).pushNamedAndRemoveUntil(
+                                        AuthWrapper.routeName, ModalRoute.withName(AuthWrapper.routeName)))
+                                    .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                return;
+                              }
                               var project = Projek(
                                   id: '',
                                   nama: namaTextController.text,

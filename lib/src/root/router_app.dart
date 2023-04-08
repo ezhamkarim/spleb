@@ -20,7 +20,12 @@ class RouterApp {
             case SenaraiRole.routeName:
               return const SenaraiRole();
             case DaftarProjek.routeName:
-              return const DaftarProjek();
+              var arg = routeSettings.arguments as DaftarProjekArg;
+              return DaftarProjek(
+                isEdit: arg.isEdit,
+                projek: arg.projek,
+                personInCharge: arg.personInCharge,
+              );
             case ProjectScreenViewOnly.routeName:
               var arg = routeSettings.arguments as ProjectScreenArg;
               return ProjectScreenViewOnly(

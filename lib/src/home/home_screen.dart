@@ -129,7 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         CustomButton(
                             titleButton: 'Register Project',
                             onPressed: () async {
-                              Navigator.of(context).pushNamed(DaftarProjek.routeName);
+                              Navigator.of(context)
+                                  .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
                             }),
                       ])),
                 );
