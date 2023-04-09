@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spleb/src/auth/auth_wrapper.dart';
+import 'package:spleb/src/model/models.dart';
 
 import 'screens.dart';
 
@@ -19,6 +20,11 @@ class RouterApp {
               return const DaftarRole();
             case SenaraiRole.routeName:
               return const SenaraiRole();
+            case BukuLogScreen.routeName:
+              var arg = routeSettings.arguments as Projek;
+              return BukuLogScreen(
+                projek: arg,
+              );
             case DaftarProjek.routeName:
               var arg = routeSettings.arguments as DaftarProjekArg;
               return DaftarProjek(
