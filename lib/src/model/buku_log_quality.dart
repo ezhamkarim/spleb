@@ -18,7 +18,7 @@ class BukuLogQuality implements BaseModel {
         id: json['id'],
         checkList: list.map((e) => Checklist.fromJson(e)).toList(),
         approval: listApproval.map((e) => Approval.fromJson(e)).toList(),
-        createdAt: json['approval']);
+        createdAt: json['createdAt']);
   }
   @override
   Map<String, dynamic> toMap() {
@@ -33,7 +33,7 @@ class BukuLogQuality implements BaseModel {
 }
 
 class Checklist implements BaseModel {
-  final String answer;
+  String? answer;
   final String title;
 
   Checklist(this.answer, this.title);
@@ -48,17 +48,18 @@ class Checklist implements BaseModel {
 }
 
 class Approval implements BaseModel {
-  final String name;
-  final String signedAt;
-  final bool isSigned;
+  String? name;
+  String? userId;
+  String? signedAt;
+  final String title;
 
-  Approval({required this.name, required this.signedAt, required this.isSigned});
+  Approval({required this.userId, required this.name, required this.signedAt, required this.title});
 
   factory Approval.fromJson(Map<String, dynamic> json) {
-    return Approval(name: json['name'], signedAt: json['signedAt'], isSigned: json['isSigned']);
+    return Approval(name: json['name'], signedAt: json['signedAt'], title: json['title'], userId: json['userId']);
   }
   @override
   Map<String, dynamic> toMap() {
-    return {'name': name, 'signedAt': signedAt, 'isSigned': isSigned};
+    return {'name': name, 'signedAt': signedAt, 'title': title, 'userId': userId};
   }
 }

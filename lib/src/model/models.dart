@@ -7,3 +7,5 @@ export 'projek.dart';
 export 'base_model.dart';
 
 export 'buku_log_quality.dart';
+
+export 'buku_log_oshe.dart';
