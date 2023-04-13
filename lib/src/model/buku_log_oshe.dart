@@ -46,7 +46,7 @@ class BukuLogOSHE implements BaseModel {
 }
 
 class ChecklistOSHE implements BaseModel {
-  final String? answer;
+  String? answer;
   final String title;
   final String? catatan;
   ChecklistOSHE({

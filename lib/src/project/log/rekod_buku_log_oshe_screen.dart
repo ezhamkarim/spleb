@@ -18,28 +18,48 @@ class BukuLogOSHEScreen extends StatefulWidget {
 }
 
 class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
-  List<Checklist> checklistsPeralatan = [
-    Checklist(null, 'KELENGKAPAN PERLINDUNGAN DIRI (PPE)'),
-    Checklist(null, 'PERALATAN KESELAMATAN'),
-    Checklist(null, 'PERALATAN KERJA'),
-    Checklist(null, 'PERALATAN HYGIENE'),
-    Checklist(null, 'KAWALAN TRAFFIK & SUSUN ATUR TAPAK (DIBUAT MERUJUK AKS BEKERJA DI JALAN RAYA)'),
+  List<ChecklistOSHE> checklistsPeralatan = [
+    ChecklistOSHE(answer: null, title: 'KELENGKAPAN PERLINDUNGAN DIRI (PPE)'),
+    ChecklistOSHE(answer: null, title: 'PERALATAN KESELAMATAN'),
+    ChecklistOSHE(answer: null, title: 'PERALATAN KERJA'),
+    ChecklistOSHE(answer: null, title: 'PERALATAN HYGIENE'),
+    ChecklistOSHE(answer: null, title: 'KAWALAN TRAFFIK & SUSUN ATUR TAPAK (DIBUAT MERUJUK AKS BEKERJA DI JALAN RAYA)'),
   ];
 
-  List<Checklist> checklists = [
-    Checklist(null, 'Kerja Awam (SSKA)'),
+  List<ChecklistOSHE> checklists = [
+    ChecklistOSHE(answer: null, title: 'Kerja Awam (SSKA)'),
   ];
 
+  List<CatatanList> catatanLists = [
+    CatatanList(title: 'KERJA DI TEMPAT TINGGI (WORKING AT HEIGHT - MENARA / ATAS BANGUNAN FLAT-TOP))', catatan: null),
+    CatatanList(title: 'PENGGALIAN & PENGORAKAN PERPARIT (TRENCHING)', catatan: null),
+    CatatanList(title: 'KERJA PANAS (HOT WORK)', catatan: null),
+    CatatanList(title: 'PENGGUNAAN JENTERA MENGANGKAT', catatan: null),
+    CatatanList(title: 'KERJA ELEKTRIK VOLTAN RENDAH/TINGGI', catatan: null),
+    CatatanList(title: 'PERMIT TO WORK KERJA BERISIKO TINGGI', catatan: null),
+  ];
   List<Approval> approvals = [
     Approval(name: null, signedAt: null, title: 'Penyelia', userId: null),
     Approval(name: null, signedAt: null, title: 'Pegawai', userId: null),
     Approval(name: null, signedAt: null, title: 'Pengurus', userId: null),
   ];
+
+  List<TextEditingController> teControllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (var element in catatanLists) {
+      teControllers.add(TextEditingController());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var userController = context.watch<UserController>();
     var projectController = context.watch<ProjectController>();
-    var bukuLogController = context.watch<BukuLogController>();
+    var bukuLogOSHEController = context.watch<BukuLogOSHEController>();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
@@ -201,10 +221,43 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                               ),
                             );
                           }),
+                      SizedBoxHelper.sizedboxH16,
+                      const Text('Senarai peralatan berkaitan'),
+                      SizedBoxHelper.sizedboxH16,
+                      ListView.builder(
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: catatanLists.length,
+                          itemBuilder: (context, i) {
+                            var catatanList = catatanLists[i];
+                            var no = i + 1;
+                            var teController = teControllers[i];
+                            return Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(child: Text('$no. ${catatanList.title}')),
+                                        // IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.chevronRight))
+                                      ],
+                                    ),
+                                    CustomTextField(
+                                        controller: teController, hintText: 'Catatan', isObscure: false, isEnabled: true)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
                       StreamBuilder<List<SplebUser>>(
                           stream: userController.readOnebyName(widget.projek.namaPIC),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
+                              var users = snapshot.requireData;
+
+                              var user = users.first;
                               return CustomButton(
                                   titleButton: 'Approve',
                                   onPressed: () async {
@@ -226,6 +279,27 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                     }
                                     logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
                                     if (!answered || !answeredPeralatan) return;
+
+                                    var index = approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
+
+                                    if (index == -1) return;
+                                    approvals[index].name = user.userName;
+                                    approvals[index].userId = user.id;
+                                    approvals[index].signedAt = DateTime.now().toString();
+
+                                    var blqoshe = BukuLogOSHE(
+                                        projekId: widget.projek.id,
+                                        id: '',
+                                        createdAt: DateTime.now().toString(),
+                                        checklistPeralatan: checklistsPeralatan,
+                                        checklist: checklists,
+                                        approval: approvals,
+                                        checklistCatatan: catatanLists);
+
+                                    await bukuLogOSHEController
+                                        .create(blqoshe)
+                                        .then((value) => Navigator.of(context).pop())
+                                        .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
                                   });
                             } else if (snapshot.hasError) {
                               return Text('Error ${snapshot.error}');

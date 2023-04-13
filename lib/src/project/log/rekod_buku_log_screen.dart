@@ -168,7 +168,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                     if (!answered) return;
 
                                     //TODO: Add approval user pegawai
-                                    var index = approvals.indexWhere((element) => element.title == 'Penyelia');
+                                    var index = approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
 
                                     if (index == -1) return;
                                     approvals[index].name = user.userName;
