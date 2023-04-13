@@ -48,7 +48,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                   return GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).pushNamed(ProjectScreenViewOnly.routeName,
-                                          arguments: ProjectScreenArg(projek.id, splebUser.role.name));
+                                          arguments: ProjectScreenArg(projek.id, splebUser));
                                     },
                                     child: Card(
                                       color: Colors.grey.shade300,

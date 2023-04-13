@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spleb/src/auth/auth_wrapper.dart';
-import 'package:spleb/src/model/models.dart';
 
 import 'screens.dart';
 
@@ -21,14 +20,16 @@ class RouterApp {
             case SenaraiRole.routeName:
               return const SenaraiRole();
             case BukuLogScreen.routeName:
-              var arg = routeSettings.arguments as Projek;
+              var arg = routeSettings.arguments as BukuLogScreenArg;
               return BukuLogScreen(
-                projek: arg,
+                projek: arg.projek,
+                userClicked: arg.userClicked,
               );
             case BukuLogOSHEScreen.routeName:
-              var arg = routeSettings.arguments as Projek;
+              var arg = routeSettings.arguments as BukuLogScreenArg;
               return BukuLogOSHEScreen(
-                projek: arg,
+                projek: arg.projek,
+                userClicked: arg.userClicked,
               );
             case DaftarProjek.routeName:
               var arg = routeSettings.arguments as DaftarProjekArg;
@@ -41,7 +42,7 @@ class RouterApp {
               var arg = routeSettings.arguments as ProjectScreenArg;
               return ProjectScreenViewOnly(
                 projectId: arg.id,
-                userRole: arg.userRole,
+                currentUser: arg.currentUser,
               );
             default:
               return ExceptionView(routeName: routeSettings.name!);

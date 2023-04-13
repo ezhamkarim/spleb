@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
+import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
@@ -8,9 +9,10 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
 class BukuLogOSHEScreen extends StatefulWidget {
-  const BukuLogOSHEScreen({super.key, required this.projek});
+  const BukuLogOSHEScreen({super.key, required this.projek, required this.userClicked});
   static const routeName = '/rekod-oshe';
   final Projek projek;
+  final SplebUser userClicked;
   @override
   State<BukuLogOSHEScreen> createState() => _BukuLogOSHEScreenState();
 }
@@ -82,6 +84,8 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                         ),
                       ),
                       SizedBoxHelper.sizedboxH16,
+                      const Text('Senarai semakan peralatan'),
+                      SizedBoxHelper.sizedboxH16,
                       ListView.builder(
                           physics: const ClampingScrollPhysics(),
                           shrinkWrap: true,
@@ -139,6 +143,8 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                             );
                           }),
                       SizedBoxHelper.sizedboxH16,
+                      const Text('Senarai peralatan berkaitan'),
+                      SizedBoxHelper.sizedboxH16,
                       ListView.builder(
                           physics: const ClampingScrollPhysics(),
                           shrinkWrap: true,
@@ -195,7 +201,38 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                               ),
                             );
                           }),
-                      CustomButton(titleButton: 'Approve', onPressed: () async {})
+                      StreamBuilder<List<SplebUser>>(
+                          stream: userController.readOnebyName(widget.projek.namaPIC),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return CustomButton(
+                                  titleButton: 'Approve',
+                                  onPressed: () async {
+                                    bool answered = true;
+                                    bool answeredPeralatan = true;
+
+                                    for (var element in checklists) {
+                                      if (element.answer == null) {
+                                        answered = false;
+                                        break;
+                                      }
+                                    }
+
+                                    for (var element in checklistsPeralatan) {
+                                      if (element.answer == null) {
+                                        answeredPeralatan = false;
+                                        break;
+                                      }
+                                    }
+                                    logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
+                                    if (!answered || !answeredPeralatan) return;
+                                  });
+                            } else if (snapshot.hasError) {
+                              return Text('Error ${snapshot.error}');
+                            } else {
+                              return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                            }
+                          })
                     ]))))));
   }
 

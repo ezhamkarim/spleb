@@ -11,17 +11,15 @@ import 'package:spleb/src/widget/custom_widget.dart';
 
 class ProjectScreenArg {
   final String id;
-  final String userRole;
+  final SplebUser currentUser;
 
-  ProjectScreenArg(this.id, this.userRole);
+  ProjectScreenArg(this.id, this.currentUser);
 }
 
-//TODO: Add buku log oshe dan kualiti
-
 class ProjectScreenViewOnly extends StatefulWidget {
-  const ProjectScreenViewOnly({super.key, required this.projectId, required this.userRole});
+  const ProjectScreenViewOnly({super.key, required this.projectId, required this.currentUser});
   final String projectId;
-  final String userRole;
+  final SplebUser currentUser;
   static const routeName = '/project';
   @override
   State<ProjectScreenViewOnly> createState() => _ProjectScreenViewOnlyState();
@@ -187,9 +185,9 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                     ],
                                   ),
                                 ),
-                                if (widget.userRole == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
+                                if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
                                   SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
+                                if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
                                   CustomButton(
                                       titleButton: 'Sahkan',
                                       onPressed: () {
@@ -202,22 +200,24 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                           });
                                         });
                                       }),
-                                if (widget.userRole == 'Penyelia') SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Penyelia')
+                                if (widget.currentUser.role.name == 'Penyelia') SizedBoxHelper.sizedboxH16,
+                                if (widget.currentUser.role.name == 'Penyelia')
                                   CustomButton(
                                       titleButton: 'Rekod Buku Log',
                                       onPressed: () {
-                                        Navigator.of(context).pushNamed(BukuLogScreen.routeName, arguments: projek);
+                                        Navigator.of(context).pushNamed(BukuLogScreen.routeName,
+                                            arguments: BukuLogScreenArg(projek, widget.currentUser));
                                       }),
-                                if (widget.userRole == 'Penyelia') SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Penyelia')
+                                if (widget.currentUser.role.name == 'Penyelia') SizedBoxHelper.sizedboxH16,
+                                if (widget.currentUser.role.name == 'Penyelia')
                                   CustomButton(
                                       titleButton: 'Rekod Buku Log OSHE',
                                       onPressed: () {
-                                        Navigator.of(context).pushNamed(BukuLogOSHEScreen.routeName, arguments: projek);
+                                        Navigator.of(context).pushNamed(BukuLogOSHEScreen.routeName,
+                                            arguments: BukuLogScreenArg(projek, widget.currentUser));
                                       }),
-                                if (widget.userRole == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
-                                if (widget.userRole == 'Pengurus Projek')
+                                if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
+                                if (widget.currentUser.role.name == 'Pengurus Projek')
                                   CustomButton(titleButton: 'Lihat Buku Log', onPressed: () {}),
                               ],
                             )))));

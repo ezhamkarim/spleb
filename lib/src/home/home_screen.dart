@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: GestureDetector(
                                             onTap: () {
                                               Navigator.of(context).pushNamed(ProjectScreenViewOnly.routeName,
-                                                  arguments: ProjectScreenArg(projek.id, splebUser.role.name));
+                                                  arguments: ProjectScreenArg(projek.id, splebUser));
                                             },
                                             child: Card(
                                               margin: const EdgeInsets.all(8),

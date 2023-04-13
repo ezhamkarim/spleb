@@ -7,10 +7,18 @@ import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
+class BukuLogScreenArg {
+  final Projek projek;
+  final SplebUser userClicked;
+
+  BukuLogScreenArg(this.projek, this.userClicked);
+}
+
 class BukuLogScreen extends StatefulWidget {
-  const BukuLogScreen({super.key, required this.projek});
+  const BukuLogScreen({super.key, required this.projek, required this.userClicked});
   static const routeName = '/rekod-buku-log';
   final Projek projek;
+  final SplebUser userClicked;
   @override
   State<BukuLogScreen> createState() => _BukuLogScreenState();
 }
@@ -157,7 +165,9 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                     }
 
                                     logInfo('answered : $answered');
+                                    if (!answered) return;
 
+                                    //TODO: Add approval user pegawai
                                     var index = approvals.indexWhere((element) => element.title == 'Penyelia');
 
                                     if (index == -1) return;
