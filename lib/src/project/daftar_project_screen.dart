@@ -63,6 +63,8 @@ class _DaftarProjekState extends State<DaftarProjek> {
 
     aktivitiSekarang = projek.statusAktiviti;
 
+    statusAktivitis = projek.aktivitiTerkini;
+
     namaPIC = widget.personInCharge;
 
     super.initState();

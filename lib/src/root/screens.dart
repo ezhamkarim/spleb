@@ -9,3 +9,4 @@ export '../home/project_screen.dart';
 export '../home/tetapan_screen.dart';
 export '../project/project_screen.dart';
 export '../project/log/rekod_buku_log_screen.dart';
+export '../project/log/rekod_buku_log_oshe_screen.dart';

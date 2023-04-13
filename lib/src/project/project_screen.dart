@@ -209,6 +209,13 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                       onPressed: () {
                                         Navigator.of(context).pushNamed(BukuLogScreen.routeName, arguments: projek);
                                       }),
+                                if (widget.userRole == 'Penyelia') SizedBoxHelper.sizedboxH16,
+                                if (widget.userRole == 'Penyelia')
+                                  CustomButton(
+                                      titleButton: 'Rekod Buku Log OSHE',
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(BukuLogOSHEScreen.routeName, arguments: projek);
+                                      }),
                                 if (widget.userRole == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
                                 if (widget.userRole == 'Pengurus Projek')
                                   CustomButton(titleButton: 'Lihat Buku Log', onPressed: () {}),

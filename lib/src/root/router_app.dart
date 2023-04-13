@@ -25,6 +25,11 @@ class RouterApp {
               return BukuLogScreen(
                 projek: arg,
               );
+            case BukuLogOSHEScreen.routeName:
+              var arg = routeSettings.arguments as Projek;
+              return BukuLogOSHEScreen(
+                projek: arg,
+              );
             case DaftarProjek.routeName:
               var arg = routeSettings.arguments as DaftarProjekArg;
               return DaftarProjek(
