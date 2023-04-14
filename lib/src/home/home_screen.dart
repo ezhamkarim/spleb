@@ -31,6 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
             stream: userController.readOne(fbUser.uid),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                if (snapshot.requireData.isEmpty) {
+                  return SizedBox(
+                      height: SizeConfig(context).scaledHeight(),
+                      width: SizeConfig(context).scaledWidth(),
+                      child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: const [Text('Sorry there are problems')])));
+                }
                 var splebUser = snapshot.requireData.first;
                 return SizedBox(
                   height: SizeConfig(context).scaledHeight(),

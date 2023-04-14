@@ -60,6 +60,7 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         var bukulogs = snapshot.requireData;
+                                        if (bukulogs.isEmpty) return const Text('Tiada Buku Log OSHE');
                                         logError('buku logs OSHE:$bukulogs');
                                         return ListView.builder(
                                             shrinkWrap: true,
@@ -95,6 +96,8 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         var bukulogs = snapshot.requireData;
+
+                                        if (bukulogs.isEmpty) return const Text('Tiada Buku Log Quality');
                                         logError('buku logs :$bukulogs');
                                         return ListView.builder(
                                             shrinkWrap: true,
