@@ -11,7 +11,7 @@ class BukuLogOSHE implements BaseModel {
 
   factory BukuLogOSHE.fromJson(Map<String, dynamic> json) {
     var listPeralatan = json['checklistPeralatan'] as List;
-    var list = json['checkList'] as List;
+    var list = json['checklist'] as List;
     var approval = json['approval'] as List;
     var listCatatan = json['checklistCatatan'] as List;
     return BukuLogOSHE(
@@ -41,6 +41,7 @@ class BukuLogOSHE implements BaseModel {
       'checklistPeralatan': checklistPeralatan.map((e) => e.toMap()).toList(),
       'checklist': checklist.map((e) => e.toMap()).toList(),
       'approval': approval.map((e) => e.toMap()).toList(),
+      'checklistCatatan': checklistCatatan.map((e) => e.toMap()).toList()
     };
   }
 }

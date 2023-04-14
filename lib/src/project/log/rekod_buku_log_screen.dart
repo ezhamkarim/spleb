@@ -10,16 +10,19 @@ import 'package:spleb/src/widget/custom_widget.dart';
 class BukuLogScreenArg {
   final Projek projek;
   final SplebUser userClicked;
-  final bool? viewOnly;
-  BukuLogScreenArg(this.projek, this.userClicked, {this.viewOnly = false});
+  final bool viewOnly;
+  final BukuLogQuality? bukuLogQuality;
+  final BukuLogOSHE? bukuLogOSHE;
+  BukuLogScreenArg(this.projek, this.userClicked, this.bukuLogQuality, this.bukuLogOSHE, {this.viewOnly = false});
 }
 
 class BukuLogScreen extends StatefulWidget {
-  const BukuLogScreen({super.key, required this.projek, required this.userClicked, this.viewOnly = false});
+  const BukuLogScreen({super.key, required this.projek, required this.userClicked, this.viewOnly = false, this.bukuLogQuality});
   static const routeName = '/rekod-buku-log';
   final Projek projek;
   final SplebUser userClicked;
   final bool viewOnly;
+  final BukuLogQuality? bukuLogQuality;
   @override
   State<BukuLogScreen> createState() => _BukuLogScreenState();
 }
@@ -39,6 +42,18 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
     Approval(name: null, signedAt: null, title: 'Pegawai', userId: null),
     Approval(name: null, signedAt: null, title: 'Pengurus', userId: null),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    var blq = widget.bukuLogQuality;
+    if (blq == null) return;
+
+    checklists = blq.checkList;
+
+    approvals = blq.approval;
+  }
+
   @override
   Widget build(BuildContext context) {
     var userController = context.watch<UserController>();
@@ -109,6 +124,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                       ],
                                     ),
                                     RadioRow(
+                                      viewOnly: widget.viewOnly,
                                       onChanged: (e) {
                                         if (e == null) return;
                                         setState(() {
@@ -151,7 +167,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                             if (snapshot.hasData) {
                               var users = snapshot.requireData;
 
-                              var user = users.first;
+                              var userPIC = users.first;
                               return CustomButton(
                                   titleButton: 'Approve',
                                   viewState: bukuLogController.viewState,
@@ -169,20 +185,37 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                     if (!answered) return;
 
                                     //TODO: Add approval user pegawai
-                                    var index = approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
+                                    var indexPIC =
+                                        approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
+                                    logInfo('Index : ${widget.userClicked.role.name}');
+                                    if (indexPIC == -1) return;
+                                    approvals[indexPIC].name = widget.userClicked.userName;
+                                    approvals[indexPIC].userId = widget.userClicked.id;
+                                    approvals[indexPIC].signedAt = DateTime.now().toString();
 
-                                    if (index == -1) return;
-                                    approvals[index].name = user.userName;
-                                    approvals[index].userId = user.id;
-                                    approvals[index].signedAt = DateTime.now().toString();
                                     var blq = BukuLogQuality(
                                         createdAt: DateTime.now().toString(),
                                         approval: approvals,
                                         projekId: widget.projek.id,
                                         id: '',
                                         checkList: checklists);
-                                    logInfo('${blq.toMap()}');
+                                    // logInfo('${blq.toMap()}');
 
+                                    if (widget.viewOnly) {
+                                      if (widget.bukuLogQuality != null) {
+                                        var oldblq = widget.bukuLogQuality;
+
+                                        if (oldblq == null) return;
+                                        blq.id = oldblq.id;
+                                        logInfo('new blq ${blq.toMap()}');
+                                        await bukuLogController
+                                            .update(blq)
+                                            .then((value) => Navigator.of(context).pop())
+                                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                        return;
+                                      }
+                                      return;
+                                    }
                                     await bukuLogController
                                         .create(blq)
                                         .then((value) => Navigator.of(context).pop())
@@ -217,12 +250,14 @@ class RadioRow extends StatefulWidget {
       required this.checklistEnum,
       required this.onChangedComply,
       required this.onTapComply,
-      required this.onTap});
+      required this.onTap,
+      required this.viewOnly});
   final Function(ChecklistEnum?)? onChanged;
   final Function(ChecklistEnum?)? onChangedComply;
   final Function()? onTapComply;
   final Function()? onTap;
   final ChecklistEnum? checklistEnum;
+  final bool viewOnly;
   @override
   State<RadioRow> createState() => _RadioRowState();
 }
@@ -230,13 +265,17 @@ class RadioRow extends StatefulWidget {
 class _RadioRowState extends State<RadioRow> {
   @override
   Widget build(BuildContext context) {
+    // if (widget.viewOnly) return Container();
     return Row(
       children: [
         Expanded(
           child: Row(
             children: [
-              Radio<ChecklistEnum>(value: ChecklistEnum.notComply, groupValue: widget.checklistEnum, onChanged: widget.onChanged),
-              Expanded(child: GestureDetector(onTap: widget.onTap, child: const Text('Not Comply')))
+              Radio<ChecklistEnum>(
+                  value: ChecklistEnum.notComply,
+                  groupValue: widget.checklistEnum,
+                  onChanged: widget.viewOnly ? null : widget.onChanged),
+              Expanded(child: GestureDetector(onTap: widget.viewOnly ? null : widget.onTap, child: const Text('Not Comply')))
             ],
           ),
         ),
@@ -244,8 +283,10 @@ class _RadioRowState extends State<RadioRow> {
             child: Row(
           children: [
             Radio<ChecklistEnum>(
-                value: ChecklistEnum.comply, groupValue: widget.checklistEnum, onChanged: widget.onChangedComply),
-            Expanded(child: GestureDetector(onTap: widget.onTapComply, child: const Text('Comply')))
+                value: ChecklistEnum.comply,
+                groupValue: widget.checklistEnum,
+                onChanged: widget.viewOnly ? null : widget.onChangedComply),
+            Expanded(child: GestureDetector(onTap: widget.viewOnly ? null : widget.onTapComply, child: const Text('Comply')))
           ],
         )),
       ],

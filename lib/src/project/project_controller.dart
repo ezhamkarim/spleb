@@ -48,7 +48,7 @@ class ProjectController extends ChangeNotifier with DatabaseService {
     return projectCollection.snapshots().map((QuerySnapshot snapshot) {
       return snapshot.docs.map((e) {
         var data = e.data() as Map<String, dynamic>;
-        logError('Project data $data');
+
         return Projek.fromJson(data);
       }).toList();
     });

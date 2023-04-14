@@ -24,12 +24,16 @@ class RouterApp {
               return BukuLogScreen(
                 projek: arg.projek,
                 userClicked: arg.userClicked,
+                viewOnly: arg.viewOnly,
+                bukuLogQuality: arg.bukuLogQuality,
               );
             case BukuLogOSHEScreen.routeName:
               var arg = routeSettings.arguments as BukuLogScreenArg;
               return BukuLogOSHEScreen(
                 projek: arg.projek,
                 userClicked: arg.userClicked,
+                viewOnly: arg.viewOnly,
+                bukuLogOSHE: arg.bukuLogOSHE,
               );
             case BukuLogListScreen.routeName:
               var arg = routeSettings.arguments as BukuLogListArg;

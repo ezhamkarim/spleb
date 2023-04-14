@@ -49,16 +49,17 @@ class BukuLogController extends ChangeNotifier with DatabaseService {
     return logQualityCollection.snapshots().map((QuerySnapshot snapshot) {
       return snapshot.docs.map((e) {
         var data = e.data() as Map<String, dynamic>;
-        logError('Project data $data');
+
         return BukuLogQuality.fromJson(data);
       }).toList();
     });
   }
 
   Stream<List<BukuLogQuality>> readByProjek(String id) {
-    return logQualityCollection.where('id', isEqualTo: id).snapshots().map((QuerySnapshot snapshot) {
+    return logQualityCollection.where('projekId', isEqualTo: id).snapshots().map((QuerySnapshot snapshot) {
       return snapshot.docs.map((e) {
         var data = e.data() as Map<String, dynamic>;
+        // logError('Project data $data');
         return BukuLogQuality.fromJson(data);
       }).toList();
     });

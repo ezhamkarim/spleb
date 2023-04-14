@@ -9,10 +9,12 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
 class BukuLogOSHEScreen extends StatefulWidget {
-  const BukuLogOSHEScreen({super.key, required this.projek, required this.userClicked});
+  const BukuLogOSHEScreen({super.key, required this.projek, required this.userClicked, this.viewOnly = false, this.bukuLogOSHE});
   static const routeName = '/rekod-oshe';
   final Projek projek;
   final SplebUser userClicked;
+  final bool viewOnly;
+  final BukuLogOSHE? bukuLogOSHE;
   @override
   State<BukuLogOSHEScreen> createState() => _BukuLogOSHEScreenState();
 }
@@ -41,7 +43,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
   List<Approval> approvals = [
     Approval(name: null, signedAt: null, title: 'Penyelia', userId: null),
     Approval(name: null, signedAt: null, title: 'Pegawai', userId: null),
-    Approval(name: null, signedAt: null, title: 'Pengurus', userId: null),
+    Approval(name: null, signedAt: null, title: 'Pengurus Projek', userId: null),
   ];
 
   List<TextEditingController> teControllers = [];
@@ -53,6 +55,24 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     for (var element in catatanLists) {
       teControllers.add(TextEditingController());
     }
+
+    var blq = widget.bukuLogOSHE;
+    logError('blq : $blq');
+
+    if (blq == null) return;
+
+    teControllers.clear();
+
+    for (var element in blq.checklistCatatan) {
+      teControllers.add(TextEditingController(text: element.catatan));
+    }
+
+    approvals = blq.approval;
+
+    catatanLists = blq.checklistCatatan;
+    checklists = blq.checklist;
+
+    checklistsPeralatan = blq.checklistPeralatan;
   }
 
   @override
@@ -127,6 +147,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                       ],
                                     ),
                                     RadioRow(
+                                      viewOnly: widget.viewOnly,
                                       onChanged: (e) {
                                         if (e == null) return;
                                         setState(() {
@@ -186,6 +207,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                       ],
                                     ),
                                     RadioRow(
+                                      viewOnly: widget.viewOnly,
                                       onChanged: (e) {
                                         if (e == null) return;
                                         setState(() {
@@ -245,7 +267,11 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                       ],
                                     ),
                                     CustomTextField(
-                                        controller: teController, hintText: 'Catatan', isObscure: false, isEnabled: true)
+                                        color: CustomColor.primary,
+                                        controller: teController,
+                                        hintText: 'Catatan',
+                                        isObscure: false,
+                                        isEnabled: true)
                                   ],
                                 ),
                               ),
@@ -259,6 +285,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
 
                               var user = users.first;
                               return CustomButton(
+                                  viewState: bukuLogOSHEController.viewState,
                                   titleButton: 'Approve',
                                   onPressed: () async {
                                     bool answered = true;
@@ -283,8 +310,8 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                     var index = approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
 
                                     if (index == -1) return;
-                                    approvals[index].name = user.userName;
-                                    approvals[index].userId = user.id;
+                                    approvals[index].name = widget.userClicked.userName;
+                                    approvals[index].userId = widget.userClicked.id;
                                     approvals[index].signedAt = DateTime.now().toString();
 
                                     var blqoshe = BukuLogOSHE(
@@ -295,7 +322,21 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                         checklist: checklists,
                                         approval: approvals,
                                         checklistCatatan: catatanLists);
+                                    if (widget.viewOnly) {
+                                      if (widget.bukuLogOSHE != null) {
+                                        var oldblq = widget.bukuLogOSHE;
 
+                                        if (oldblq == null) return;
+                                        blqoshe.id = oldblq.id;
+                                        logInfo('new blq ${blqoshe.toMap()}');
+                                        await bukuLogOSHEController
+                                            .update(blqoshe)
+                                            .then((value) => Navigator.of(context).pop())
+                                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                        return;
+                                      }
+                                      return;
+                                    }
                                     await bukuLogOSHEController
                                         .create(blqoshe)
                                         .then((value) => Navigator.of(context).pop())

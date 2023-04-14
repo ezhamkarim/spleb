@@ -53,6 +53,16 @@ class BukuLogOSHEController extends ChangeNotifier with DatabaseService {
     });
   }
 
+  Stream<List<BukuLogOSHE>> readByProjek(String id) {
+    return logOSHECollection.where('projekId', isEqualTo: id).snapshots().map((QuerySnapshot snapshot) {
+      return snapshot.docs.map((e) {
+        var data = e.data() as Map<String, dynamic>;
+        logError('BukuLogOSHE data $data');
+        return BukuLogOSHE.fromJson(data);
+      }).toList();
+    });
+  }
+
   Future<void> delete(String id) async {
     try {
       await logOSHECollection.doc(id).delete();
