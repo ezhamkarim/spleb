@@ -218,7 +218,12 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                       }),
                                 if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
                                 if (widget.currentUser.role.name == 'Pengurus Projek')
-                                  CustomButton(titleButton: 'Lihat Buku Log', onPressed: () {}),
+                                  CustomButton(
+                                      titleButton: 'Lihat Buku Log',
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pushNamed(BukuLogListScreen.routeName, arguments: BukuLogListArg(false, projek));
+                                      }),
                               ],
                             )))));
           } else if (snapshot.hasError) {

@@ -63,7 +63,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
-          title: const Text('Rekod Buku Log'),
+          title: const Text('Rekod Buku Log OSHE'),
         ),
         body: SizedBox(
             height: SizeConfig(context).scaledHeight(),

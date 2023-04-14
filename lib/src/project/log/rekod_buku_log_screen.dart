@@ -10,15 +10,16 @@ import 'package:spleb/src/widget/custom_widget.dart';
 class BukuLogScreenArg {
   final Projek projek;
   final SplebUser userClicked;
-
-  BukuLogScreenArg(this.projek, this.userClicked);
+  final bool? viewOnly;
+  BukuLogScreenArg(this.projek, this.userClicked, {this.viewOnly = false});
 }
 
 class BukuLogScreen extends StatefulWidget {
-  const BukuLogScreen({super.key, required this.projek, required this.userClicked});
+  const BukuLogScreen({super.key, required this.projek, required this.userClicked, this.viewOnly = false});
   static const routeName = '/rekod-buku-log';
   final Projek projek;
   final SplebUser userClicked;
+  final bool viewOnly;
   @override
   State<BukuLogScreen> createState() => _BukuLogScreenState();
 }

@@ -55,6 +55,15 @@ class BukuLogController extends ChangeNotifier with DatabaseService {
     });
   }
 
+  Stream<List<BukuLogQuality>> readByProjek(String id) {
+    return logQualityCollection.where('id', isEqualTo: id).snapshots().map((QuerySnapshot snapshot) {
+      return snapshot.docs.map((e) {
+        var data = e.data() as Map<String, dynamic>;
+        return BukuLogQuality.fromJson(data);
+      }).toList();
+    });
+  }
+
   Future<void> delete(String id) async {
     try {
       await logQualityCollection.doc(id).delete();

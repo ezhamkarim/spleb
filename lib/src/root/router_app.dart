@@ -31,6 +31,12 @@ class RouterApp {
                 projek: arg.projek,
                 userClicked: arg.userClicked,
               );
+            case BukuLogListScreen.routeName:
+              var arg = routeSettings.arguments as BukuLogListArg;
+              return BukuLogListScreen(
+                showOSHE: arg.showOSHE,
+                projek: arg.projek,
+              );
             case DaftarProjek.routeName:
               var arg = routeSettings.arguments as DaftarProjekArg;
               return DaftarProjek(
