@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,46 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC7iE4Y3LxZem4v9FjbON7T9p-9O9uBtq4',
-    appId: '1:761280440018:web:5e3a9417dd7d290362ef0b',
-    messagingSenderId: '761280440018',
-    projectId: 'signin-75855',
-    authDomain: 'signin-75855.firebaseapp.com',
-    databaseURL: 'https://signin-75855.firebaseio.com',
-    storageBucket: 'signin-75855.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyARoolIxeutppUXEPiZoeurKbjh5I3wrcc',
-    appId: '1:761280440018:android:1bd48f31dc38f51b62ef0b',
-    messagingSenderId: '761280440018',
-    projectId: 'signin-75855',
-    databaseURL: 'https://signin-75855.firebaseio.com',
-    storageBucket: 'signin-75855.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDN7mw2jx0vNGum26MXUxyB2VYWTN7UV3A',
-    appId: '1:761280440018:ios:5b8a2167a624ee5662ef0b',
-    messagingSenderId: '761280440018',
-    projectId: 'signin-75855',
-    databaseURL: 'https://signin-75855.firebaseio.com',
-    storageBucket: 'signin-75855.appspot.com',
-    androidClientId: '761280440018-b5kqib90r3ure0h2kqij02m7ci1poh03.apps.googleusercontent.com',
-    iosClientId: '761280440018-nvb3u4q2bag38nn063j8o25ba8l6jqks.apps.googleusercontent.com',
-    iosBundleId: 'com.spleb.spleb',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDN7mw2jx0vNGum26MXUxyB2VYWTN7UV3A',
-    appId: '1:761280440018:ios:5b8a2167a624ee5662ef0b',
-    messagingSenderId: '761280440018',
-    projectId: 'signin-75855',
-    databaseURL: 'https://signin-75855.firebaseio.com',
-    storageBucket: 'signin-75855.appspot.com',
-    androidClientId: '761280440018-b5kqib90r3ure0h2kqij02m7ci1poh03.apps.googleusercontent.com',
-    iosClientId: '761280440018-nvb3u4q2bag38nn063j8o25ba8l6jqks.apps.googleusercontent.com',
-    iosBundleId: 'com.spleb.spleb',
+    apiKey: 'AIzaSyDrblD67ntpeX3BR_GDjB-nDcnO4wp70Ww',
+    appId: '1:619366558544:android:f7db50356b5824ae7b9a55',
+    messagingSenderId: '619366558544',
+    projectId: 'spleb-b90dc',
+    storageBucket: 'spleb-b90dc.appspot.com',
   );
 }
