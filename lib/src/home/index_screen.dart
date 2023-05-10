@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/root/screens.dart';
+import 'package:spleb/src/root/services.dart';
 import 'package:spleb/src/style/style.dart';
 
 class IndexScreen extends StatefulWidget {
@@ -21,6 +24,7 @@ class _IndexScreenState extends State<IndexScreen> {
   // int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    var authService = context.watch<AuthService>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColor.primary,
@@ -52,6 +56,48 @@ class _IndexScreenState extends State<IndexScreen> {
             ),
             onTap: () {
               Navigator.of(context).pushNamed('/index');
+            },
+          ),
+          ListTile(
+            title: const Text('Projek'),
+            trailing: const Icon(
+              Icons.file_copy,
+              color: CustomColor.primary,
+            ),
+            onTap: () {
+              Navigator.of(context).pushNamed('/projek-list');
+            },
+          ),
+          ListTile(
+            title: const Text('Buku Log'),
+            trailing: const Icon(
+              Icons.book,
+              color: CustomColor.primary,
+            ),
+            onTap: () {
+              Navigator.of(context).pushNamed('/buku-log');
+            },
+          ),
+          ListTile(
+            title: const Text('Buku Panduan'),
+            trailing: const Icon(
+              Icons.book_online,
+              color: CustomColor.primary,
+            ),
+            onTap: () {
+              Navigator.of(context).pushNamed('/buku-panduan');
+            },
+          ),
+          ListTile(
+            title: const Text('Log Keluar'),
+            trailing: const Icon(
+              Icons.logout,
+              color: CustomColor.primary,
+            ),
+            onTap: () async {
+              DialogHelper.dialogWithAction(context, 'Log Keluar', 'Anda pasti untuk log keluar?', onPressed: () async {
+                await authService.logout();
+              });
             },
           ),
         ]),

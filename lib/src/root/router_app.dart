@@ -48,6 +48,8 @@ class RouterApp {
                 projek: arg.projek,
                 personInCharge: arg.personInCharge,
               );
+            case ProjectScreen.routeName:
+              return const ProjectScreen();
             case ProjectScreenViewOnly.routeName:
               var arg = routeSettings.arguments as ProjectScreenArg;
               return ProjectScreenViewOnly(
