@@ -55,7 +55,7 @@ class _IndexScreenState extends State<IndexScreen> {
               color: CustomColor.primary,
             ),
             onTap: () {
-              Navigator.of(context).pushNamed('/index');
+              Navigator.of(context).pop();
             },
           ),
           ListTile(

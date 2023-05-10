@@ -12,6 +12,12 @@ class Projek implements BaseModel {
   final String tarikhMula;
   final String tarikhAkhir;
 
+  @override
+  bool operator ==(Object other) => other is Projek && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+
   Projek(
       {required this.id,
       required this.nama,
