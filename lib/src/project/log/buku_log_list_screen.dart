@@ -7,18 +7,21 @@ import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
+import 'package:spleb/src/widget/custom_widget.dart';
+
+enum ShowBook { oshe, quality, both }
 
 class BukuLogListArg {
-  final bool showOSHE;
-  final Projek projek;
+  final ShowBook showBook;
+  final Projek? projek;
 
-  BukuLogListArg(this.showOSHE, this.projek);
+  BukuLogListArg(this.showBook, this.projek);
 }
 
 class BukuLogListScreen extends StatefulWidget {
-  const BukuLogListScreen({super.key, required this.showOSHE, required this.projek});
-  final bool showOSHE;
-  final Projek projek;
+  const BukuLogListScreen({super.key, required this.showBook, required this.projek});
+  final ShowBook showBook;
+  final Projek? projek;
   static const routeName = '/buku-logs';
   @override
   State<BukuLogListScreen> createState() => _BukuLogListScreenState();
@@ -39,7 +42,9 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
-          title: widget.showOSHE ? Text('Buku Log OSHE ${widget.projek.nama}') : Text('Buku Log ${widget.projek.nama}'),
+          title: widget.showBook == ShowBook.oshe
+              ? Text('Buku Log OSHE ${widget.projek?.nama ?? ''}')
+              : Text('Buku Log ${widget.projek?.nama ?? ''}'),
         ),
         body: SizedBox(
             height: SizeConfig(context).scaledHeight(),
@@ -54,9 +59,9 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                             padding: const EdgeInsets.all(24.0),
                             child: Form(
                                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                              if (widget.showOSHE)
+                              if (widget.showBook == ShowBook.oshe)
                                 StreamBuilder<List<BukuLogOSHE>>(
-                                    stream: bukuLogOSHEController.readByProjek(widget.projek.id),
+                                    stream: bukuLogOSHEController.readByProjek(id: widget.projek?.id),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         var bukulogs = snapshot.requireData;
@@ -90,9 +95,9 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                             child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
                                       }
                                     }),
-                              if (!widget.showOSHE)
+                              if (widget.showBook == ShowBook.quality)
                                 StreamBuilder<List<BukuLogQuality>>(
-                                    stream: bukuLogController.readByProjek(widget.projek.id),
+                                    stream: bukuLogController.readByProjek(id: widget.projek?.id),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         var bukulogs = snapshot.requireData;
@@ -126,7 +131,26 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                         return const Center(
                                             child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
                                       }
-                                    })
+                                    }),
+                              if (widget.showBook == ShowBook.both)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    CustomButton(
+                                        titleButton: 'OSHE',
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
+                                              arguments: BukuLogListArg(ShowBook.oshe, widget.projek));
+                                        }),
+                                    SizedBoxHelper.sizedboxH16,
+                                    CustomButton(
+                                        titleButton: 'Quality',
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
+                                              arguments: BukuLogListArg(ShowBook.quality, widget.projek));
+                                        })
+                                  ],
+                                )
                             ]))));
                   } else if (snapshot.hasError) {
                     return Text('Error ${snapshot.error}');

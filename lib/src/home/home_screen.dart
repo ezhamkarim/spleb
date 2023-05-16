@@ -130,18 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         SizedBoxHelper.sizedboxH32,
-                        CustomButton(
-                            titleButton: 'Register User',
-                            onPressed: () async {
-                              Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                            }),
+                        if (splebUser.role.name == 'Pengurus')
+                          CustomButton(
+                              titleButton: 'Register User',
+                              onPressed: () async {
+                                Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                              }),
                         SizedBoxHelper.sizedboxH16,
-                        CustomButton(
-                            titleButton: 'Register Project',
-                            onPressed: () async {
-                              Navigator.of(context)
-                                  .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
-                            }),
+                        if (splebUser.role.name == 'Pegawai')
+                          CustomButton(
+                              titleButton: 'Register Project',
+                              onPressed: () async {
+                                Navigator.of(context)
+                                    .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
+                              }),
                       ])),
                 );
               } else if (snapshot.hasError) {

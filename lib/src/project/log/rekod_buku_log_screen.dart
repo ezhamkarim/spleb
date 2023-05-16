@@ -8,7 +8,7 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
 class BukuLogScreenArg {
-  final Projek projek;
+  final Projek? projek;
   final SplebUser userClicked;
   final bool viewOnly;
   final BukuLogQuality? bukuLogQuality;
@@ -19,7 +19,7 @@ class BukuLogScreenArg {
 class BukuLogScreen extends StatefulWidget {
   const BukuLogScreen({super.key, required this.projek, required this.userClicked, this.viewOnly = false, this.bukuLogQuality});
   static const routeName = '/rekod-buku-log';
-  final Projek projek;
+  final Projek? projek;
   final SplebUser userClicked;
   final bool viewOnly;
   final BukuLogQuality? bukuLogQuality;
@@ -67,167 +67,187 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
         body: SizedBox(
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
-            child: SingleChildScrollView(
-                child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Form(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Card(
+            child: StreamBuilder<List<Projek>>(
+                stream: projectController.readOne(id: widget.bukuLogQuality?.projekId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var projeks = snapshot.requireData;
+
+                    if (projeks.isEmpty) {
+                      return const Text('Projek tidak ditemui ');
+                    }
+
+                    var projek = projeks.first;
+                    return SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Nama : ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                            padding: const EdgeInsets.all(24.0),
+                            child: Form(
+                                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'Nama : ',
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(projek.nama),
+                                        ],
+                                      ),
+                                      SizedBoxHelper.sizedboxH8,
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'Aktiviti : ',
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(projek.statusAktiviti),
+                                        ],
+                                      ),
+                                      // IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.chevronRight))
+                                    ],
                                   ),
-                                  Text(widget.projek.nama),
-                                ],
-                              ),
-                              SizedBoxHelper.sizedboxH8,
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Aktiviti : ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(widget.projek.statusAktiviti),
-                                ],
-                              ),
-                              // IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.chevronRight))
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBoxHelper.sizedboxH16,
-                      ListView.builder(
-                          physics: const ClampingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: checklists.length,
-                          itemBuilder: (context, i) {
-                            var checklist = checklists[i];
-                            var no = i + 1;
-                            var checklistEnum = checklist.answer == null ? null : getChecklistEnum(checklist.answer!);
-                            return Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(child: Text('$no. ${checklist.title}')),
-                                        // IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.chevronRight))
-                                      ],
-                                    ),
-                                    RadioRow(
-                                      viewOnly: widget.viewOnly,
-                                      onChanged: (e) {
-                                        if (e == null) return;
-                                        setState(() {
-                                          checklistEnum = e;
-                                          checklist.answer = getString(e);
-                                        });
-                                      },
-                                      checklistEnum: checklistEnum,
-                                      onChangedComply: (e) {
-                                        if (e == null) return;
-                                        setState(() {
-                                          checklistEnum = e;
-                                          checklist.answer = getString(e);
-                                        });
-                                      },
-                                      onTap: () {
-                                        if (checklistEnum == null) return;
-                                        setState(() {
-                                          checklistEnum = ChecklistEnum.notComply;
-                                          checklist.answer = getString(checklistEnum!);
-                                        });
-                                      },
-                                      onTapComply: () {
-                                        if (checklistEnum == null) return;
-                                        setState(() {
-                                          checklistEnum = ChecklistEnum.comply;
-                                          checklist.answer = getString(checklistEnum!);
-                                        });
-                                      },
-                                    )
-                                  ],
                                 ),
                               ),
-                            );
-                          }),
-                      SizedBoxHelper.sizedboxH16,
-                      StreamBuilder<List<SplebUser>>(
-                          stream: userController.readOnebyName(widget.projek.namaPIC),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var users = snapshot.requireData;
+                              SizedBoxHelper.sizedboxH16,
+                              ListView.builder(
+                                  physics: const ClampingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: checklists.length,
+                                  itemBuilder: (context, i) {
+                                    var checklist = checklists[i];
+                                    var no = i + 1;
+                                    var checklistEnum = checklist.answer == null ? null : getChecklistEnum(checklist.answer!);
+                                    return Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Expanded(child: Text('$no. ${checklist.title}')),
+                                                // IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.chevronRight))
+                                              ],
+                                            ),
+                                            RadioRow(
+                                              viewOnly: widget.viewOnly,
+                                              onChanged: (e) {
+                                                if (e == null) return;
+                                                setState(() {
+                                                  checklistEnum = e;
+                                                  checklist.answer = getString(e);
+                                                });
+                                              },
+                                              checklistEnum: checklistEnum,
+                                              onChangedComply: (e) {
+                                                if (e == null) return;
+                                                setState(() {
+                                                  checklistEnum = e;
+                                                  checklist.answer = getString(e);
+                                                });
+                                              },
+                                              onTap: () {
+                                                if (checklistEnum == null) return;
+                                                setState(() {
+                                                  checklistEnum = ChecklistEnum.notComply;
+                                                  checklist.answer = getString(checklistEnum!);
+                                                });
+                                              },
+                                              onTapComply: () {
+                                                if (checklistEnum == null) return;
+                                                setState(() {
+                                                  checklistEnum = ChecklistEnum.comply;
+                                                  checklist.answer = getString(checklistEnum!);
+                                                });
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                              SizedBoxHelper.sizedboxH16,
+                              StreamBuilder<List<SplebUser>>(
+                                  stream: userController.readOnebyName(projek.namaPIC),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      var users = snapshot.requireData;
 
-                              var userPIC = users.first;
-                              return CustomButton(
-                                  titleButton: 'Approve',
-                                  viewState: bukuLogController.viewState,
-                                  onPressed: () async {
-                                    bool answered = true;
+                                      var userPIC = users.first;
+                                      return CustomButton(
+                                          titleButton: 'Approve',
+                                          viewState: bukuLogController.viewState,
+                                          onPressed: () async {
+                                            bool answered = true;
 
-                                    for (var element in checklists) {
-                                      if (element.answer == null) {
-                                        answered = false;
-                                        break;
-                                      }
+                                            for (var element in checklists) {
+                                              if (element.answer == null) {
+                                                answered = false;
+                                                break;
+                                              }
+                                            }
+
+                                            logInfo('answered : $answered');
+                                            if (!answered) return;
+
+                                            //TODO: Add approval user pegawai
+                                            var indexPIC =
+                                                approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
+                                            logInfo('Index : ${widget.userClicked.role.name}');
+                                            if (indexPIC == -1) return;
+                                            approvals[indexPIC].name = widget.userClicked.userName;
+                                            approvals[indexPIC].userId = widget.userClicked.id;
+                                            approvals[indexPIC].signedAt = DateTime.now().toString();
+
+                                            var blq = BukuLogQuality(
+                                                createdAt: DateTime.now().toString(),
+                                                approval: approvals,
+                                                projekId: projek.id,
+                                                id: '',
+                                                checkList: checklists);
+                                            // logInfo('${blq.toMap()}');
+
+                                            if (widget.viewOnly) {
+                                              if (widget.bukuLogQuality != null) {
+                                                var oldblq = widget.bukuLogQuality;
+
+                                                if (oldblq == null) return;
+                                                blq.id = oldblq.id;
+                                                logInfo('new blq ${blq.toMap()}');
+                                                await bukuLogController
+                                                    .update(blq)
+                                                    .then((value) => Navigator.of(context).pop())
+                                                    .catchError(
+                                                        (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                return;
+                                              }
+                                              return;
+                                            }
+                                            await bukuLogController
+                                                .create(blq)
+                                                .then((value) => Navigator.of(context).pop())
+                                                .catchError(
+                                                    (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                          });
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error ${snapshot.error}');
+                                    } else {
+                                      return const Center(
+                                          child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
                                     }
-
-                                    logInfo('answered : $answered');
-                                    if (!answered) return;
-
-                                    //TODO: Add approval user pegawai
-                                    var indexPIC =
-                                        approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
-                                    logInfo('Index : ${widget.userClicked.role.name}');
-                                    if (indexPIC == -1) return;
-                                    approvals[indexPIC].name = widget.userClicked.userName;
-                                    approvals[indexPIC].userId = widget.userClicked.id;
-                                    approvals[indexPIC].signedAt = DateTime.now().toString();
-
-                                    var blq = BukuLogQuality(
-                                        createdAt: DateTime.now().toString(),
-                                        approval: approvals,
-                                        projekId: widget.projek.id,
-                                        id: '',
-                                        checkList: checklists);
-                                    // logInfo('${blq.toMap()}');
-
-                                    if (widget.viewOnly) {
-                                      if (widget.bukuLogQuality != null) {
-                                        var oldblq = widget.bukuLogQuality;
-
-                                        if (oldblq == null) return;
-                                        blq.id = oldblq.id;
-                                        logInfo('new blq ${blq.toMap()}');
-                                        await bukuLogController
-                                            .update(blq)
-                                            .then((value) => Navigator.of(context).pop())
-                                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                        return;
-                                      }
-                                      return;
-                                    }
-                                    await bukuLogController
-                                        .create(blq)
-                                        .then((value) => Navigator.of(context).pop())
-                                        .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                  });
-                            } else if (snapshot.hasError) {
-                              return Text('Error ${snapshot.error}');
-                            } else {
-                              return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
-                            }
-                          })
-                    ]))))));
+                                  })
+                            ]))));
+                  } else if (snapshot.hasError) {
+                    return Text('Error ${snapshot.error}');
+                  } else {
+                    return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                  }
+                })));
   }
 
   String getString(ChecklistEnum clEnum) {

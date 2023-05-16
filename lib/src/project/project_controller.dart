@@ -54,7 +54,7 @@ class ProjectController extends ChangeNotifier with DatabaseService {
     });
   }
 
-  Stream<List<Projek>> readOne(String id) {
+  Stream<List<Projek>> readOne({String? id}) {
     return projectCollection.where('id', isEqualTo: id).snapshots().map((QuerySnapshot snapshot) {
       return snapshot.docs.map((e) {
         var data = e.data() as Map<String, dynamic>;

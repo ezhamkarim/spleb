@@ -11,3 +11,5 @@ export '../project/project_screen.dart';
 export '../project/log/rekod_buku_log_screen.dart';
 export '../project/log/rekod_buku_log_oshe_screen.dart';
 export '../project/log/buku_log_list_screen.dart';
+export '../buku_panduan/buku_panduan_screen.dart';
+export '../project/issue/daftar_issue_screen.dart';

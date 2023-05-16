@@ -74,8 +74,8 @@ class _IndexScreenState extends State<IndexScreen> {
               Icons.book,
               color: CustomColor.primary,
             ),
-            onTap: () {
-              Navigator.of(context).pushNamed('/buku-log');
+            onTap: () async {
+              Navigator.of(context).pushNamed(BukuLogListScreen.routeName, arguments: BukuLogListArg(ShowBook.both, null));
             },
           ),
           ListTile(

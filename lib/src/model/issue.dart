@@ -1,7 +1,7 @@
 import 'package:spleb/src/model/models.dart';
 
 class Issue implements BaseModel {
-  final String id;
+  String id;
   final String name;
   final String createdById;
   final bool isRead;
