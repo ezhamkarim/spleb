@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
+import 'package:native_pdf_view/native_pdf_view.dart';
 
 class BukuPanduanScreen extends StatefulWidget {
   const BukuPanduanScreen({super.key});
@@ -32,9 +32,41 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                 CustomButton(
                     titleButton: 'Buku Panduan',
                     onPressed: () async {
-                      OpenFile.open('assets/pdf/panduan.pdf');
+                      // OpenFile.open('assets/pdf/panduan.pdf');
+                      Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan.pdf');
                     })
               ]),
             ))));
+  }
+}
+
+class PdfApp extends StatefulWidget {
+  static const routeName = '/pdf-viewer';
+  const PdfApp({Key? key, required this.path}) : super(key: key);
+  final String path;
+
+  @override
+  State<PdfApp> createState() => _PdfAppState();
+}
+
+class _PdfAppState extends State<PdfApp> {
+  late PdfController pdfController;
+
+  Widget pdfView() => PdfView(
+        controller: pdfController,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+
+    pdfController = PdfController(
+      document: PdfDocument.openAsset(widget.path),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return pdfView();
   }
 }

@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               const Text(
-                                'Projeck untuk Disahkan',
+                                'Projek untuk Disahkan',
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBoxHelper.sizedboxH16,

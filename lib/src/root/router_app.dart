@@ -54,6 +54,10 @@ class RouterApp {
               var projekId = routeSettings.arguments as String;
 
               return IssueListScreen(projekId: projekId);
+
+            case PdfApp.routeName:
+              var projekId = routeSettings.arguments as String;
+              return PdfApp(path: projekId);
             case BukuPanduanScreen.routeName:
               return const BukuPanduanScreen();
             case DaftarIssue.routeName:
