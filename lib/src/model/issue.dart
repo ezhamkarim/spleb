@@ -6,6 +6,7 @@ class Issue implements BaseModel {
   final String createdById;
   final String description;
   final bool isRead;
+  final String projekId;
 
   factory Issue.fromJson(Map<String, dynamic> json) {
     return Issue(
@@ -13,11 +14,25 @@ class Issue implements BaseModel {
         name: json['name'],
         createdById: json['createdById'],
         isRead: json['isRead'],
-        description: json['description']);
+        description: json['description'],
+        projekId: json['projekId']);
   }
-  Issue({required this.id, required this.name, required this.createdById, required this.isRead, required this.description});
+  Issue(
+      {required this.id,
+      required this.name,
+      required this.createdById,
+      required this.isRead,
+      required this.description,
+      required this.projekId});
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name, 'createdById': createdById, 'isRead': isRead, 'description': description};
+    return {
+      'id': id,
+      'name': name,
+      'createdById': createdById,
+      'isRead': isRead,
+      'description': description,
+      'projekId': projekId
+    };
   }
 }

@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
+import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
 
 class IssueListScreen extends StatefulWidget {
-  const IssueListScreen({super.key, required this.projekId});
+  const IssueListScreen({super.key, required this.projek});
   static const routeName = '/issue-list';
-  final String projekId;
+  final Projek projek;
   @override
   State<IssueListScreen> createState() => _IssueListScreenState();
 }
@@ -43,12 +44,19 @@ class _IssueListScreenState extends State<IssueListScreen> {
               appBar: AppBar(
                 backgroundColor: CustomColor.primary,
                 title: const Text('Senarai Isu'),
+                actions: [
+                  IconButton(
+                      onPressed: () async {
+                        Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projek);
+                      },
+                      icon: const Icon(Icons.add))
+                ],
               ),
               body: SizedBox(
                 height: SizeConfig(context).scaledHeight(),
                 width: SizeConfig(context).scaledWidth(),
                 child: StreamBuilder<List<Issue>>(
-                    stream: issueController.readByProjek(id: widget.projekId),
+                    stream: issueController.readByProjek(id: widget.projek.id),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var issues = snapshot.requireData;

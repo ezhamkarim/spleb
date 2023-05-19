@@ -43,7 +43,12 @@ class _DaftarProjekState extends State<DaftarProjek> {
   final currentAktivitiTextController = TextEditingController();
   List<String> statusProjeks = ['Belum Disahkan', 'Disahkan', 'Dibatalkan'];
   List<String> statusAktivitis = [
-    'Inside Plant',
+    'Project Creation',
+    'Project Approval',
+    'Project Handover',
+    'Request LOR',
+    'Testing',
+    'RFSI & COMM'
   ];
 
   @override

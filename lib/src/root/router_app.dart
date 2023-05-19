@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spleb/src/auth/auth_wrapper.dart';
+import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/project/issue/issue_list_screen.dart';
 
 import 'screens.dart';
@@ -51,18 +52,22 @@ class RouterApp {
                 personInCharge: arg.personInCharge,
               );
             case IssueListScreen.routeName:
-              var projekId = routeSettings.arguments as String;
+              var projek = routeSettings.arguments as Projek;
 
-              return IssueListScreen(projekId: projekId);
-
+              return IssueListScreen(projek: projek);
+            case UrusProjek.routeName:
+              var splebUser = routeSettings.arguments as SplebUser;
+              return UrusProjek(
+                splebUser: splebUser,
+              );
             case PdfApp.routeName:
               var projekId = routeSettings.arguments as String;
               return PdfApp(path: projekId);
             case BukuPanduanScreen.routeName:
               return const BukuPanduanScreen();
             case DaftarIssue.routeName:
-              var arg = routeSettings.arguments as String;
-              return DaftarIssue(projekId: arg);
+              var arg = routeSettings.arguments as Projek;
+              return DaftarIssue(projek: arg);
             case ProjectScreen.routeName:
               return const ProjectScreen();
             case ProjectScreenViewOnly.routeName:

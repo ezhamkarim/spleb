@@ -8,10 +8,10 @@ import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
 class DaftarIssue extends StatefulWidget {
-  const DaftarIssue({super.key, required this.projekId});
+  const DaftarIssue({super.key, required this.projek});
   static const routeName = '/daftar-issue';
 
-  final String projekId;
+  final Projek projek;
   @override
   State<DaftarIssue> createState() => _DaftarIssueState();
 }
@@ -35,6 +35,7 @@ class _DaftarIssueState extends State<DaftarIssue> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
+          title: Text('Isu - ${widget.projek.nama}'),
           // title: widget.isEdit ? const Text('Kemaskini Issue') : const Text('Daftar Issue'),
         ),
         body: SizedBox(
@@ -67,6 +68,7 @@ class _DaftarIssueState extends State<DaftarIssue> {
                                 if (formKey.currentState!.validate()) {
                                   var isu = Issue(
                                       id: '',
+                                      projekId: widget.projek.id,
                                       name: namaTextController.text,
                                       createdById: fbUser.uid,
                                       isRead: false,
