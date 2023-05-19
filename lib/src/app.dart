@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProjectController()),
         ChangeNotifierProvider(create: (_) => BukuLogController()),
         ChangeNotifierProvider(create: (_) => BukuLogOSHEController()),
+        ChangeNotifierProvider(create: (_) => IssueController()),
         ChangeNotifierProvider<AuthService>(
           create: (_) => AuthService(FirebaseAuth.instance),
         ),

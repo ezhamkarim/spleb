@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
+import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
@@ -16,10 +18,20 @@ class DaftarIssue extends StatefulWidget {
 
 class _DaftarIssueState extends State<DaftarIssue> {
   final namaTextController = TextEditingController();
+  final descriptionTextController = TextEditingController();
+
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     var issueController = context.watch<IssueController>();
+    var fbUser = context.watch<User?>();
+    if (fbUser == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
@@ -36,16 +48,35 @@ class _DaftarIssueState extends State<DaftarIssue> {
                         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                           CustomTextField(
                               controller: namaTextController,
-                              hintText: 'Nama Issue',
+                              hintText: 'Nama Isu',
+                              isObscure: false,
+                              isEnabled: true,
+                              color: CustomColor.primary),
+                          SizedBoxHelper.sizedboxH16,
+                          CustomTextField(
+                              controller: descriptionTextController,
+                              hintText: 'Description',
                               isObscure: false,
                               isEnabled: true,
                               color: CustomColor.primary),
                           SizedBoxHelper.sizedboxH16,
                           CustomButton(
                               viewState: issueController.viewState,
-                              titleButton: 'Register',
+                              titleButton: 'Create',
                               onPressed: () async {
-                                if (formKey.currentState!.validate()) {}
+                                if (formKey.currentState!.validate()) {
+                                  var isu = Issue(
+                                      id: '',
+                                      name: namaTextController.text,
+                                      createdById: fbUser.uid,
+                                      isRead: false,
+                                      description: descriptionTextController.text);
+
+                                  await issueController
+                                      .create(isu)
+                                      .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()))
+                                      .then((value) => Navigator.of(context).pop());
+                                }
                               })
                         ]))))));
   }

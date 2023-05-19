@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
-import 'package:spleb/src/project/issue/issue_list_screen.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
@@ -233,15 +232,12 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                 CustomButton(
                                     titleButton: 'Isu semasa',
                                     onPressed: () {
-                                      if (widget.currentUser.role.name == 'Pengurus Projek') {
-                                        Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projectId);
-                                        return;
-                                      }
+                                      Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projectId);
 
-                                      if (widget.currentUser.role.name == 'Penyelia Projek') {
-                                        Navigator.of(context).pushNamed(IssueListScreen.routeName, arguments: widget.projectId);
-                                        return;
-                                      }
+                                      // if (widget.currentUser.role.name == 'Penyelia Projek') {
+                                      //   Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projectId);
+                                      //   return;
+                                      // }
                                     }),
                               ],
                             )))));
