@@ -45,10 +45,17 @@ class _DaftarProjekState extends State<DaftarProjek> {
   List<String> statusAktivitis = [
     'Project Creation',
     'Project Approval',
-    'Project Handover',
+    'Handover',
     'Request LOR',
+    'SURVEY with RR/Vendor',
+    'PR/PO Material',
+    'RR/VENDOR WORKS',
     'Testing',
-    'RFSI & COMM'
+    'Ready for RFSI',
+    'RFSI & COMM',
+    'Lnch',
+    'Complete',
+    'Close'
   ];
 
   @override
@@ -110,14 +117,14 @@ class _DaftarProjekState extends State<DaftarProjek> {
                       SizedBoxHelper.sizedboxH16,
                       CustomTextField(
                           controller: kumpulanTextController,
-                          hintText: 'Kumpulan Projek',
+                          hintText: 'Kumpulan Projek(Syarikat Kontraktor)',
                           isObscure: false,
                           isEnabled: true,
                           color: CustomColor.primary),
                       SizedBoxHelper.sizedboxH16,
                       CustomTextField(
                           controller: tarikhMulaTextController,
-                          hintText: 'Tarikh Mula',
+                          hintText: 'Tarikh Jangka Mula Projek',
                           isObscure: false,
                           isEnabled: true,
                           onTap: () async {
@@ -165,7 +172,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                       SizedBoxHelper.sizedboxH16,
                       CustomTextField(
                           controller: tarikhAkhirTextController,
-                          hintText: 'Tarikh Akhir',
+                          hintText: 'Tarikh Jangka Tamat Projek',
                           isObscure: false,
                           isEnabled: true,
                           onTap: () async {
@@ -214,7 +221,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Status Aktiviti'),
+                            child: Text('Status Projek'),
                           ),
                           SizedBoxHelper.sizedboxH8,
                           Column(
@@ -274,14 +281,14 @@ class _DaftarProjekState extends State<DaftarProjek> {
                           const Padding(
                             padding: EdgeInsets.only(left: 8.0),
                             child: Text(
-                              'Aktiviti Sekarang',
+                              'Aktiviti Sekarang/Status Projek',
                             ),
                           ),
                           SizedBoxHelper.sizedboxH8,
                           DropdownButtonHideUnderline(
                             child: DropdownButtonFormField<String>(
                                 validator: (value) {
-                                  if (value == null) return 'Sila Pilih Status Aktiviti Sekarang';
+                                  if (value == null) return 'Sila Pilih Status Projek Sekarang';
                                   return null;
                                 },
                                 hint: const Text(
