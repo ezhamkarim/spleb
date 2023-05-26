@@ -29,24 +29,29 @@ class _UrusProjekState extends State<UrusProjek> {
                 child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                CustomButton(
-                    titleButton: 'Daftar Pengguna',
-                    onPressed: () async {
-                      // OpenFile.open('assets/pdf/panduan.pdf');
-                      Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                    }),
-                SizedBoxHelper.sizedboxH16,
-                CustomButton(
-                    titleButton: 'Daftar Projek',
-                    onPressed: () async {
-                      // OpenFile.open('assets/pdf/panduan.pdf');
-                      Navigator.of(context).pushNamed(DaftarProjek.routeName,
-                          arguments: DaftarProjekArg(
-                            false,
-                            null,
-                            widget.splebUser,
-                          ));
-                    })
+                if (widget.splebUser.role.name == 'Pegawai')
+                  CustomButton(
+                      titleButton: 'Daftar Pengguna',
+                      onPressed: () async {
+                        // OpenFile.open('assets/pdf/panduan.pdf');
+                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                      }),
+                if (widget.splebUser.role.name == 'Pegawai') SizedBoxHelper.sizedboxH16,
+                if (widget.splebUser.role.name == 'Pegawai')
+                  CustomButton(
+                      titleButton: 'Daftar Lokasi',
+                      onPressed: () async {
+                        // OpenFile.open('assets/pdf/panduan.pdf');
+                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                      }),
+                if (widget.splebUser.role.name == 'Pegawai') SizedBoxHelper.sizedboxH16,
+                if (widget.splebUser.role.name == 'Pengurus Projek')
+                  CustomButton(
+                      titleButton: 'Sahkan Projek',
+                      onPressed: () async {
+                        // OpenFile.open('assets/pdf/panduan.pdf');
+                        Navigator.of(context).pushNamed(SahkanProject.routeName, arguments: widget.splebUser);
+                      }),
               ]),
             ))));
   }

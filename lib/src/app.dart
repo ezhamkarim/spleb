@@ -11,6 +11,8 @@ import 'package:spleb/src/root/services.dart';
 import 'settings/settings_controller.dart';
 
 /// The Widget that configures your application.
+
+//TODO: Guna semua nama button bahasa melayu
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,

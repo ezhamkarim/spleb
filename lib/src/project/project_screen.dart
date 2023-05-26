@@ -177,26 +177,30 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                             items: projek.aktivitiTerkini
                                                 .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
                                                 .toList(),
-                                            onChanged: null),
+                                            onChanged: (e) async {
+                                              if (e == null) return;
+                                              projek.statusAktiviti = e;
+                                              await projectController.update(projek);
+                                            }),
                                       ),
                                     ],
                                   ),
                                 ),
-                                if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
-                                  SizedBoxHelper.sizedboxH16,
-                                if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
-                                  CustomButton(
-                                      titleButton: 'Sahkan',
-                                      onPressed: () {
-                                        DialogHelper.dialogWithAction(context, 'Amaran', 'Anda pasti untuk sahkan?',
-                                            onPressed: () async {
-                                          projek.statusProjek = 'Disahkan';
-                                          await projectController.update(projek).catchError((e) {
-                                            Navigator.of(context).pop();
-                                            DialogHelper.dialogWithOutActionWarning(context, e.toString());
-                                          });
-                                        });
-                                      }),
+                                // if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
+                                //   SizedBoxHelper.sizedboxH16,
+                                // if (widget.currentUser.role.name == 'Pengurus Projek' && projek.statusProjek == 'Belum Disahkan')
+                                //   CustomButton(
+                                //       titleButton: 'Sahkan',
+                                //       onPressed: () {
+                                //         DialogHelper.dialogWithAction(context, 'Amaran', 'Anda pasti untuk sahkan?',
+                                //             onPressed: () async {
+                                //           projek.statusProjek = 'Disahkan';
+                                //           await projectController.update(projek).catchError((e) {
+                                //             Navigator.of(context).pop();
+                                //             DialogHelper.dialogWithOutActionWarning(context, e.toString());
+                                //           });
+                                //         });
+                                //       }),
                                 if (widget.currentUser.role.name == 'Penyelia') SizedBoxHelper.sizedboxH16,
                                 if (widget.currentUser.role.name == 'Penyelia')
                                   CustomButton(
@@ -234,12 +238,13 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                     titleButton: 'Isu semasa',
                                     onPressed: () {
                                       Navigator.of(context).pushNamed(IssueListScreen.routeName, arguments: projek);
-
-                                      // if (widget.currentUser.role.name == 'Penyelia Projek') {
-                                      //   Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projectId);
-                                      //   return;
-                                      // }
                                     }),
+                                CustomButton(
+                                    titleButton: 'Lampiran',
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(IssueListScreen.routeName, arguments: projek);
+                                    }),
+                                //TODO: Add lampiran
                               ],
                             )))));
           } else if (snapshot.hasError) {

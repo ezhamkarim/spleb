@@ -4,7 +4,6 @@ import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/root/services.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
-//TODO: Add tetapan view
 class TetapanScreen extends StatefulWidget {
   const TetapanScreen({super.key});
 

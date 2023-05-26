@@ -82,7 +82,7 @@ class _IndexScreenState extends State<IndexScreen> {
                       Navigator.of(context).pop();
                     },
                   ),
-                  if (splebUser.role.name == 'Pengurus Projek')
+                  if (splebUser.role.name == 'Pengurus Projek' || splebUser.role.name == 'Pegawai')
                     ListTile(
                       title: const Text('Urus Projek'),
                       trailing: const Icon(

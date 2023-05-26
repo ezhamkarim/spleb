@@ -34,6 +34,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
   final kumpulanTextController = TextEditingController();
   final tarikhMulaTextController = TextEditingController();
   final tarikhAkhirTextController = TextEditingController();
+  final noProjekController = TextEditingController();
 
   String? aktivitiSekarang;
   // String? statusAktiviti;
@@ -115,6 +116,12 @@ class _DaftarProjekState extends State<DaftarProjek> {
                           isEnabled: true,
                           color: CustomColor.primary),
                       SizedBoxHelper.sizedboxH16,
+                      CustomTextField(
+                          controller: noProjekController,
+                          hintText: 'No Projek',
+                          isObscure: false,
+                          isEnabled: true,
+                          color: CustomColor.primary),
                       CustomTextField(
                           controller: kumpulanTextController,
                           hintText: 'Kumpulan Projek(Syarikat Kontraktor)',
@@ -414,12 +421,14 @@ class _DaftarProjekState extends State<DaftarProjek> {
                                 var project = Projek(
                                     id: projekObjBeforeEdited.id,
                                     nama: namaTextController.text,
+                                    noProjek: noProjekController.text,
                                     statusProjek: projekObjBeforeEdited.statusProjek,
                                     statusAktiviti: aktivitiSekarang ?? '',
                                     lokasiProjek: '',
                                     aktivitiTerkini: statusAktivitis,
                                     kumpulan: kumpulanTextController.text,
                                     namaPIC: namaPIC!.userName,
+                                    lampiran: projekObjBeforeEdited.lampiran,
                                     tarikhMula: tarikhMulaTextController.text,
                                     tarikhAkhir: tarikhAkhirTextController.text);
 
@@ -433,6 +442,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                               var project = Projek(
                                   id: '',
                                   nama: namaTextController.text,
+                                  noProjek: noProjekController.text,
                                   statusProjek: 'Belum Disahkan',
                                   statusAktiviti: aktivitiSekarang ?? '',
                                   lokasiProjek: '',
@@ -440,6 +450,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                                   kumpulan: kumpulanTextController.text,
                                   namaPIC: namaPIC!.userName,
                                   tarikhMula: tarikhMulaTextController.text,
+                                  lampiran: [],
                                   tarikhAkhir: tarikhAkhirTextController.text);
                               await projectController
                                   .create(project)

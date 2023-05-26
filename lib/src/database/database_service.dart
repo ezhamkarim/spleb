@@ -8,4 +8,5 @@ class DatabaseService {
   final logQualityCollection = FirebaseFirestore.instance.collection('logQualitySpleb');
   final logOSHECollection = FirebaseFirestore.instance.collection('logOSHESpleb');
   final isuCollection = FirebaseFirestore.instance.collection('isuSpleb');
+  final locationCollection = FirebaseFirestore.instance.collection('location');
 }

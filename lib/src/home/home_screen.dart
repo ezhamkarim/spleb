@@ -5,7 +5,6 @@ import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
-import 'package:spleb/src/widget/custom_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -129,21 +128,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   })
                             ],
                           ),
-                        SizedBoxHelper.sizedboxH32,
-                        if (splebUser.role.name == 'Pengurus')
-                          CustomButton(
-                              titleButton: 'Register User',
-                              onPressed: () async {
-                                Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                              }),
-                        SizedBoxHelper.sizedboxH16,
-                        if (splebUser.role.name == 'Pegawai')
-                          CustomButton(
-                              titleButton: 'Register Project',
-                              onPressed: () async {
-                                Navigator.of(context)
-                                    .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
-                              }),
+                        // SizedBoxHelper.sizedboxH32,
+                        // if (splebUser.role.name == 'Pengurus')
+                        //   CustomButton(
+                        //       titleButton: 'Register User',
+                        //       onPressed: () async {
+                        //         Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                        //       }),
+                        // SizedBoxHelper.sizedboxH16,
+                        // if (splebUser.role.name == 'Pegawai')
+                        //   CustomButton(
+                        //       titleButton: 'Register Project',
+                        //       onPressed: () async {
+                        //         Navigator.of(context)
+                        //             .pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
+                        //       }),
                       ])),
                 );
               } else if (snapshot.hasError) {

@@ -17,6 +17,7 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
   @override
   Widget build(BuildContext context) {
     var projectController = context.watch<ProjectController>();
+    //TODO: Tambah buku panduan
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
@@ -30,7 +31,7 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
               padding: const EdgeInsets.all(24.0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 CustomButton(
-                    titleButton: 'Buku Panduan',
+                    titleButton: 'BUKU PANDUAN BEKERJA DI RUANG TERKURUNG',
                     onPressed: () async {
                       // OpenFile.open('assets/pdf/panduan.pdf');
                       Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan.pdf');

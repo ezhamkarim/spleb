@@ -180,7 +180,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
 
                                       var userPIC = users.first;
                                       return CustomButton(
-                                          titleButton: 'Approve',
+                                          titleButton: 'Hantar',
                                           viewState: bukuLogController.viewState,
                                           onPressed: () async {
                                             bool answered = true;
@@ -196,6 +196,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                             if (!answered) return;
 
                                             //TODO: Add approval user pegawai
+                                            //TODO: Add user location
                                             var indexPIC =
                                                 approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
                                             logInfo('Index : ${widget.userClicked.role.name}');

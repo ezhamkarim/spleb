@@ -297,7 +297,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                       var user = users.first;
                                       return CustomButton(
                                           viewState: bukuLogOSHEController.viewState,
-                                          titleButton: 'Approve',
+                                          titleButton: 'Hantar',
                                           onPressed: () async {
                                             bool answered = true;
                                             bool answeredPeralatan = true;

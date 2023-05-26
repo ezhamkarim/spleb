@@ -76,6 +76,11 @@ class RouterApp {
                 projectId: arg.id,
                 currentUser: arg.currentUser,
               );
+            case SahkanProject.routeName:
+              var arg = routeSettings.arguments as SplebUser;
+              return SahkanProject(
+                splebUser: arg,
+              );
             default:
               return ExceptionView(routeName: routeSettings.name!);
           }
