@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
@@ -20,6 +21,7 @@ class BukuLogOSHEScreen extends StatefulWidget {
 }
 
 class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
+  CheckOSHE? checkOSHE;
   List<ChecklistOSHE> checklistsPeralatan = [
     ChecklistOSHE(answer: null, title: 'KELENGKAPAN PERLINDUNGAN DIRI (PPE)'),
     ChecklistOSHE(answer: null, title: 'PERALATAN KESELAMATAN'),
@@ -47,13 +49,37 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
   ];
 
   List<TextEditingController> teControllers = [];
+  Location location = Location();
+
+  Future<LocationData?> getLocation() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return null;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    return await location.getLocation();
+  }
 
   @override
   void initState() {
     super.initState();
 
     for (var element in catatanLists) {
-      teControllers.add(TextEditingController());
+      teControllers.add(TextEditingController(text: element.catatan));
     }
 
     var blq = widget.bukuLogOSHE;
@@ -89,7 +115,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: widget.bukuLogOSHE?.projekId),
+                stream: projectController.readOne(id: widget.projek?.id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;
@@ -111,12 +137,13 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             'Nama : ',
                                             style: TextStyle(fontWeight: FontWeight.bold),
                                           ),
-                                          Text(projek.nama),
+                                          Expanded(child: Text(projek.nama)),
                                         ],
                                       ),
                                       SizedBoxHelper.sizedboxH8,
@@ -288,74 +315,139 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                       ),
                                     );
                                   }),
+                              SizedBoxHelper.sizedboxH16,
+                              Card(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'PERAKUAN SPV',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBoxHelper.sizedboxH16,
+                                    const Text(
+                                      'Berdasarkan semakan dokumen dan pemerhatian fizikal di tapak, saya dengan ini mengesahkan',
+                                    ),
+                                    SizedBoxHelper.sizedboxH16,
+                                    Row(
+                                      children: [
+                                        const Expanded(child: Text('Kerja tersebut boleh dimulakan / diteruskan.')),
+                                        Radio<CheckOSHE>(
+                                            value: CheckOSHE.dimulakan,
+                                            groupValue: checkOSHE,
+                                            onChanged: (val) {
+                                              if (val == null) return;
+
+                                              setState(() {
+                                                checkOSHE = val;
+                                              });
+                                            })
+                                      ],
+                                    ),
+                                    SizedBoxHelper.sizedboxH16,
+                                    Row(
+                                      children: [
+                                        const Expanded(
+                                            child: Text(
+                                                'Pemberhentian kerja tersebut serta merta. (Kerja hanya boleh dimulakan / disambung setelah tindakan pembaikan dibuat)')),
+                                        Radio<CheckOSHE>(
+                                            value: CheckOSHE.dihentikan,
+                                            groupValue: checkOSHE,
+                                            onChanged: (val) {
+                                              if (val == null) return;
+
+                                              setState(() {
+                                                checkOSHE = val;
+                                              });
+                                            })
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )),
                               StreamBuilder<List<SplebUser>>(
                                   stream: userController.readOnebyName(projek.namaPIC),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      var users = snapshot.requireData;
+                                      // var users = snapshot.requireData;
 
-                                      var user = users.first;
+                                      // var user = users.first;
                                       return CustomButton(
                                           viewState: bukuLogOSHEController.viewState,
                                           titleButton: 'Hantar',
-                                          onPressed: () async {
-                                            bool answered = true;
-                                            bool answeredPeralatan = true;
+                                          onPressed: checkOSHE == null
+                                              ? null
+                                              : () async {
+                                                  bool answered = true;
+                                                  bool answeredPeralatan = true;
 
-                                            for (var element in checklists) {
-                                              if (element.answer == null) {
-                                                answered = false;
-                                                break;
-                                              }
-                                            }
+                                                  for (var element in checklists) {
+                                                    if (element.answer == null) {
+                                                      answered = false;
+                                                      break;
+                                                    }
+                                                  }
 
-                                            for (var element in checklistsPeralatan) {
-                                              if (element.answer == null) {
-                                                answeredPeralatan = false;
-                                                break;
-                                              }
-                                            }
-                                            logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
-                                            if (!answered || !answeredPeralatan) return;
+                                                  for (var element in checklistsPeralatan) {
+                                                    if (element.answer == null) {
+                                                      answeredPeralatan = false;
+                                                      break;
+                                                    }
+                                                  }
+                                                  logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
+                                                  if (!answered || !answeredPeralatan) return;
 
-                                            var index =
-                                                approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
+                                                  var index = approvals
+                                                      .indexWhere((element) => element.title == widget.userClicked.role.name);
 
-                                            if (index == -1) return;
-                                            approvals[index].name = widget.userClicked.userName;
-                                            approvals[index].userId = widget.userClicked.id;
-                                            approvals[index].signedAt = DateTime.now().toString();
+                                                  if (index == -1) return;
+                                                  approvals[index].name = widget.userClicked.userName;
+                                                  approvals[index].userId = widget.userClicked.id;
+                                                  approvals[index].signedAt = DateTime.now().toString();
 
-                                            var blqoshe = BukuLogOSHE(
-                                                projekId: projek.id,
-                                                id: '',
-                                                createdAt: DateTime.now().toString(),
-                                                checklistPeralatan: checklistsPeralatan,
-                                                checklist: checklists,
-                                                approval: approvals,
-                                                checklistCatatan: catatanLists);
-                                            if (widget.viewOnly) {
-                                              if (widget.bukuLogOSHE != null) {
-                                                var oldblq = widget.bukuLogOSHE;
+                                                  var locationData = await getLocation();
+                                                  logError('LOCATION DATA : $locationData');
+                                                  if (locationData == null) return;
 
-                                                if (oldblq == null) return;
-                                                blqoshe.id = oldblq.id;
-                                                logInfo('new blq ${blqoshe.toMap()}');
-                                                await bukuLogOSHEController
-                                                    .update(blqoshe)
-                                                    .then((value) => Navigator.of(context).pop())
-                                                    .catchError(
-                                                        (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                                return;
-                                              }
-                                              return;
-                                            }
-                                            await bukuLogOSHEController
-                                                .create(blqoshe)
-                                                .then((value) => Navigator.of(context).pop())
-                                                .catchError(
-                                                    (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                          });
+                                                  var blqoshe = BukuLogOSHE(
+                                                      projekId: projek.id,
+                                                      id: '',
+                                                      createdAt: DateTime.now().toString(),
+                                                      checklistPeralatan: checklistsPeralatan,
+                                                      checklist: checklists,
+                                                      approval: approvals,
+                                                      checklistCatatan: catatanLists,
+                                                      lat: locationData.latitude ?? 0,
+                                                      long: locationData.longitude ?? 0);
+                                                  if (widget.viewOnly) {
+                                                    if (widget.bukuLogOSHE != null) {
+                                                      var oldblq = widget.bukuLogOSHE;
+
+                                                      if (oldblq == null) return;
+                                                      blqoshe.id = oldblq.id;
+                                                      logInfo('new blq ${blqoshe.toMap()}');
+                                                      await bukuLogOSHEController
+                                                          .update(blqoshe)
+                                                          .then((value) => Navigator.of(context).pop())
+                                                          .catchError((e) =>
+                                                              DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                      return;
+                                                    }
+                                                    return;
+                                                  }
+                                                  await bukuLogOSHEController.create(blqoshe).catchError(
+                                                      (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                  logError('Projek : ${projek.toMap()}');
+                                                  projek.lokasiProjek = LokasiProjek(
+                                                      lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
+                                                  await projectController
+                                                      .update(projek)
+                                                      .then((value) => Navigator.of(context).pop())
+                                                      .catchError(
+                                                          (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                });
                                     } else if (snapshot.hasError) {
                                       return Text('Error ${snapshot.error}');
                                     } else {
@@ -384,3 +476,5 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     return ChecklistEnum.notComply;
   }
 }
+
+enum CheckOSHE { dimulakan, dihentikan }

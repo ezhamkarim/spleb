@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
@@ -43,6 +44,31 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
     Approval(name: null, signedAt: null, title: 'Pengurus', userId: null),
   ];
 
+  Location location = Location();
+
+  Future<LocationData?> getLocation() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return null;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    return await location.getLocation();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +94,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: widget.bukuLogQuality?.projekId),
+                stream: projectController.readOne(id: widget.projek?.id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;
@@ -176,9 +202,9 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                   stream: userController.readOnebyName(projek.namaPIC),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      var users = snapshot.requireData;
+                                      // var users = snapshot.requireData;
 
-                                      var userPIC = users.first;
+                                      // var userPIC = users.first;
                                       return CustomButton(
                                           titleButton: 'Hantar',
                                           viewState: bukuLogController.viewState,
@@ -194,9 +220,9 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
 
                                             logInfo('answered : $answered');
                                             if (!answered) return;
-
-                                            //TODO: Add approval user pegawai
-                                            //TODO: Add user location
+                                            var locationData = await getLocation();
+                                            logError('LOCATION DATA : $locationData');
+                                            if (locationData == null) return;
                                             var indexPIC =
                                                 approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
                                             logInfo('Index : ${widget.userClicked.role.name}');
@@ -229,8 +255,12 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                               }
                                               return;
                                             }
-                                            await bukuLogController
-                                                .create(blq)
+                                            await bukuLogController.create(blq).catchError(
+                                                (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                            projek.lokasiProjek =
+                                                LokasiProjek(lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
+                                            await projectController
+                                                .update(projek)
                                                 .then((value) => Navigator.of(context).pop())
                                                 .catchError(
                                                     (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));

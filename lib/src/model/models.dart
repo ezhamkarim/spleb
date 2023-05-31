@@ -13,3 +13,5 @@ export 'buku_log_oshe.dart';
 export 'issue.dart';
 
 export 'lampiran.dart';
+
+export 'lokasi.dart';

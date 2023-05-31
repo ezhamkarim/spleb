@@ -34,11 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SizedBox(
                       height: SizeConfig(context).scaledHeight(),
                       width: SizeConfig(context).scaledWidth(),
-                      child: Padding(
-                          padding: const EdgeInsets.all(24.0),
+                      child: const Padding(
+                          padding: EdgeInsets.all(24.0),
                           child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: const [Text('Sorry there are problems')])));
+                              crossAxisAlignment: CrossAxisAlignment.stretch, children: [Text('Sorry there are problems')])));
                 }
                 var splebUser = snapshot.requireData.first;
                 return SizedBox(
@@ -106,7 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       style: TextStyle(fontWeight: FontWeight.bold),
                                                     ),
                                                     SizedBoxHelper.sizedboxH8,
-                                                    Text(projek.lokasiProjek.isEmpty ? 'Tiada Lokasi' : projek.lokasiProjek),
+                                                    Text(projek.lokasiProjek == null
+                                                        ? 'Tiada Lokasi'
+                                                        : projek.lokasiProjek.toString()),
                                                     SizedBoxHelper.sizedboxH16,
                                                     const Text(
                                                       'PIC (Person In Charge)',

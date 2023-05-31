@@ -7,7 +7,7 @@ class Projek implements BaseModel {
   String noProjek;
   String statusAktiviti;
   final List<String> aktivitiTerkini;
-  final String lokasiProjek;
+  LokasiProjek? lokasiProjek;
   final String kumpulan;
   final String namaPIC;
   final String tarikhMula;
@@ -36,12 +36,14 @@ class Projek implements BaseModel {
   factory Projek.fromJson(Map<String, dynamic> json) {
     var aktivitiTerkiniList = json['aktivitiTerkini'] as List;
     var lampirans = json['lampiran'] as List?;
+
+    var lokasi = json['lokasiProjek'] == null ? null : LokasiProjek.fromMap(json['lokasiProjek']);
     return Projek(
         id: json['id'],
         nama: json['nama'],
         statusProjek: json['statusProjek'],
         statusAktiviti: json['statusAktiviti'],
-        lokasiProjek: json['lokasiProjek'],
+        lokasiProjek: lokasi,
         kumpulan: json['kumpulan'],
         namaPIC: json['namaPIC'],
         tarikhMula: json['tarikhMula'],
@@ -59,7 +61,7 @@ class Projek implements BaseModel {
       'statusProjek': statusProjek,
       'statusAktiviti': statusAktiviti,
       'aktivitiTerkini': aktivitiTerkini,
-      'lokasiProjek': lokasiProjek,
+      'lokasiProjek': lokasiProjek?.toMap(),
       'kumpulan': kumpulan,
       'namaPIC': namaPIC,
       'tarikhMula': tarikhMula,

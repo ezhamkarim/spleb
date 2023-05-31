@@ -8,6 +8,8 @@ class BukuLogOSHE implements BaseModel {
   List<ChecklistOSHE> checklist;
   List<Approval> approval;
   List<CatatanList> checklistCatatan;
+  double? lat;
+  double? long;
 
   factory BukuLogOSHE.fromJson(Map<String, dynamic> json) {
     var listPeralatan = json['checklistPeralatan'] as List;
@@ -21,7 +23,9 @@ class BukuLogOSHE implements BaseModel {
         checklist: list.map((e) => ChecklistOSHE.fromJson(e)).toList(),
         checklistPeralatan: listPeralatan.map((e) => ChecklistOSHE.fromJson(e)).toList(),
         approval: approval.map((e) => Approval.fromJson(e)).toList(),
-        checklistCatatan: listCatatan.map((e) => CatatanList.fromJson(e)).toList());
+        checklistCatatan: listCatatan.map((e) => CatatanList.fromJson(e)).toList(),
+        lat: json['lat'],
+        long: json['long']);
   }
   BukuLogOSHE(
       {required this.projekId,
@@ -30,7 +34,9 @@ class BukuLogOSHE implements BaseModel {
       required this.checklistPeralatan,
       required this.checklist,
       required this.approval,
-      required this.checklistCatatan});
+      required this.checklistCatatan,
+      required this.lat,
+      required this.long});
 
   @override
   Map<String, dynamic> toMap() {
@@ -41,7 +47,9 @@ class BukuLogOSHE implements BaseModel {
       'checklistPeralatan': checklistPeralatan.map((e) => e.toMap()).toList(),
       'checklist': checklist.map((e) => e.toMap()).toList(),
       'approval': approval.map((e) => e.toMap()).toList(),
-      'checklistCatatan': checklistCatatan.map((e) => e.toMap()).toList()
+      'checklistCatatan': checklistCatatan.map((e) => e.toMap()).toList(),
+      'lat': lat,
+      'long': long
     };
   }
 }

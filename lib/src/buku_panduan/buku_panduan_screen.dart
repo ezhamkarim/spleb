@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:spleb/src/helper/helper.dart';
-import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
@@ -16,7 +15,7 @@ class BukuPanduanScreen extends StatefulWidget {
 class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
   @override
   Widget build(BuildContext context) {
-    var projectController = context.watch<ProjectController>();
+    // var projectController = context.watch<ProjectController>();
     //TODO: Tambah buku panduan
     return Scaffold(
         appBar: AppBar(
@@ -35,6 +34,13 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                     onPressed: () async {
                       // OpenFile.open('assets/pdf/panduan.pdf');
                       Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan.pdf');
+                    }),
+                SizedBoxHelper.sizedboxH16,
+                CustomButton(
+                    titleButton: 'BUKU PANDUAN BEKERJA DI ATAS TALIAN',
+                    onPressed: () async {
+                      // OpenFile.open('assets/pdf/panduan.pdf');
+                      Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan-2.pdf');
                     })
               ]),
             ))));

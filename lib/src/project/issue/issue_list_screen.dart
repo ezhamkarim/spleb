@@ -34,12 +34,12 @@ class _IssueListScreenState extends State<IssueListScreen> {
               return SizedBox(
                   height: SizeConfig(context).scaledHeight(),
                   width: SizeConfig(context).scaledWidth(),
-                  child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch, children: const [Text('Sorry there are problems')])));
+                  child: const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child:
+                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [Text('Sorry there are problems')])));
             }
-            var splebUser = snapshot.requireData.first;
+            // var splebUser = snapshot.requireData.first;
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: CustomColor.primary,

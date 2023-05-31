@@ -119,7 +119,7 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                           style: TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                         SizedBoxHelper.sizedboxH8,
-                                        Text(projek.lokasiProjek.isEmpty ? 'Tiada Lokasi' : projek.lokasiProjek),
+                                        Text(projek.lokasiProjek == null ? 'Tiada Lokasi' : projek.lokasiProjek.toString()),
                                         SizedBoxHelper.sizedboxH16,
                                         const Text(
                                           'PIC (Person In Charge)',
@@ -239,10 +239,11 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                     onPressed: () {
                                       Navigator.of(context).pushNamed(IssueListScreen.routeName, arguments: projek);
                                     }),
+                                SizedBoxHelper.sizedboxH16,
                                 CustomButton(
                                     titleButton: 'Lampiran',
                                     onPressed: () {
-                                      Navigator.of(context).pushNamed(IssueListScreen.routeName, arguments: projek);
+                                      Navigator.of(context).pushNamed(TambahLampiran.routeName, arguments: projek);
                                     }),
                                 //TODO: Add lampiran
                               ],

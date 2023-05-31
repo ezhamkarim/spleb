@@ -150,9 +150,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                   Row(
                                                     children: [
                                                       Expanded(
-                                                          child: Text(projek.lokasiProjek.isEmpty
+                                                          child: Text(projek.lokasiProjek == null
                                                               ? 'Tiada Lokasi'
-                                                              : projek.lokasiProjek)),
+                                                              : projek.lokasiProjek.toString())),
                                                       IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_right))
                                                     ],
                                                   )

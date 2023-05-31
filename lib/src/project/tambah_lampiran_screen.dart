@@ -1,11 +1,16 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spleb/src/database/database.dart';
 import 'package:spleb/src/helper/helper.dart';
+import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
 import 'package:spleb/src/root/controllers.dart';
-import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
+import 'package:path/path.dart' as pathFile;
 
 class TambahLampiran extends StatefulWidget {
   const TambahLampiran({super.key, required this.projek});
@@ -17,6 +22,14 @@ class TambahLampiran extends StatefulWidget {
 }
 
 class _TambahLampiranState extends State<TambahLampiran> {
+  late Projek projek;
+
+  @override
+  void initState() {
+    projek = widget.projek;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var projectController = context.watch<ProjectController>();
@@ -40,15 +53,38 @@ class _TambahLampiranState extends State<TambahLampiran> {
                       child:
                           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [Text('Sorry there are problems')])));
             }
-            var splebUser = snapshot.requireData.first;
+            // var splebUser = snapshot.requireData.first;
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: CustomColor.primary,
-                title: const Text('Senarai Isu'),
+                title: const Text('Senarai Lampiran'),
                 actions: [
                   IconButton(
                       onPressed: () async {
-                        Navigator.of(context).pushNamed(DaftarIssue.routeName, arguments: widget.projek);
+                        FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+                        if (result == null) return;
+
+                        File file = File(result.files.single.path!);
+
+                        var task = await StorageService.uploadFile(
+                            destination: '${projek.id}/${pathFile.basename(file.path)}', file: file);
+
+                        if (task == null) return;
+
+                        var link = await task.ref.getDownloadURL().catchError((e) {
+                          logError('Error get download link : $e');
+                          return 'null';
+                        });
+
+                        if (link == 'null') return;
+                        projek.lampiran.add(Lampiran(
+                            id: DateTime.timestamp().toString(), link: link, contentType: pathFile.extension(file.path)));
+
+                        await projectController
+                            .update(projek)
+                            .then((value) => DialogHelper.dialogWithOutActionWarning(context, 'Berjaya menghantar'))
+                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
                       },
                       icon: const Icon(Icons.add))
                 ],
@@ -57,11 +93,20 @@ class _TambahLampiranState extends State<TambahLampiran> {
                 height: SizeConfig(context).scaledHeight(),
                 width: SizeConfig(context).scaledWidth(),
                 child: StreamBuilder<List<Projek>>(
-                    stream: projectController.read(),
+                    stream: projectController.readOne(id: widget.projek.id),
                     // stream: issueController.readByProjek(id: widget.projek.id),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        var issues = snapshot.requireData;
+                        var projeks = snapshot.requireData;
+
+                        if (projeks.isEmpty) {
+                          return Center(child: Text('Projek ${widget.projek.nama} tidak dijumpai'));
+                        }
+                        var lampirans = projeks.first.lampiran;
+
+                        if (lampirans.isEmpty) {
+                          return const Center(child: Text('Tiada lampiran'));
+                        }
                         return SingleChildScrollView(
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,9 +114,9 @@ class _TambahLampiranState extends State<TambahLampiran> {
                             ListView.builder(
                                 physics: const ClampingScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: issues.length,
+                                itemCount: lampirans.length,
                                 itemBuilder: (c, i) {
-                                  var isu = issues[i];
+                                  var lampir = lampirans[i];
                                   var no = i + 1;
                                   return Container(
                                     margin: const EdgeInsets.all(8),
@@ -79,7 +124,7 @@ class _TambahLampiranState extends State<TambahLampiran> {
                                     child: ListTile(
                                       onTap: () {},
                                       leading: Text('$no'),
-                                      title: Text(isu.nama),
+                                      title: Text(lampir.id),
                                     ),
                                   );
                                 })

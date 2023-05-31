@@ -15,3 +15,4 @@ export '../buku_panduan/buku_panduan_screen.dart';
 export '../project/issue/daftar_issue_screen.dart';
 export '../project/urus_projek_screen.dart';
 export '../project/sahkan_project_list_screen.dart';
+export '../project/tambah_lampiran_screen.dart';

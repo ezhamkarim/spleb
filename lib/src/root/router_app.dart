@@ -81,6 +81,9 @@ class RouterApp {
               return SahkanProject(
                 splebUser: arg,
               );
+            case TambahLampiran.routeName:
+              var arg = routeSettings.arguments as Projek;
+              return TambahLampiran(projek: arg);
             default:
               return ExceptionView(routeName: routeSettings.name!);
           }
