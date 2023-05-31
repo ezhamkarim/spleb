@@ -15,8 +15,6 @@ class BukuPanduanScreen extends StatefulWidget {
 class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
   @override
   Widget build(BuildContext context) {
-    // var projectController = context.watch<ProjectController>();
-    //TODO: Tambah buku panduan
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
