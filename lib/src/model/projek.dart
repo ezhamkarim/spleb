@@ -49,7 +49,7 @@ class Projek implements BaseModel {
         tarikhMula: json['tarikhMula'],
         tarikhAkhir: json['tarikhAkhir'],
         aktivitiTerkini: aktivitiTerkiniList.map((e) => e.toString()).toList(),
-        noProjek: json['noProjek'] ?? '',
+        noProjek: json['noProjek'] ?? '-',
         lampiran: lampirans?.map((e) => Lampiran.fromMap(e)).toList() ?? []);
   }
   @override

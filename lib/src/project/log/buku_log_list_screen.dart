@@ -47,10 +47,10 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
               return SizedBox(
                   height: SizeConfig(context).scaledHeight(),
                   width: SizeConfig(context).scaledWidth(),
-                  child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch, children: const [Text('Sorry there are problems')])));
+                  child: const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child:
+                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [Text('Sorry there are problems')])));
             }
             var splebUser = snapshot.requireData.first;
             return Scaffold(
@@ -221,6 +221,16 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 var bukulogs = snapshot.requireData;
+                                                if (splebUser.role.name == 'Pengurus Projek' ||
+                                                    splebUser.role.name == 'Pegawai') {
+                                                  bukulogs.removeWhere((element) {
+                                                    var list =
+                                                        element.approval.where((element) => element.userId == splebUser.id);
+                                                    logError('list.isEmpty = ${list.isEmpty}');
+                                                    if (list.isEmpty) return false;
+                                                    return true;
+                                                  });
+                                                }
                                                 if (bukulogs.isEmpty) return const Text('Tiada Buku Log OSHE');
                                                 logError('buku logs OSHE:$bukulogs');
                                                 return ListView.builder(
@@ -230,6 +240,7 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                                     itemBuilder: (c, i) {
                                                       var no = i + 1;
                                                       var bukuLog = bukulogs[i];
+
                                                       return Container(
                                                         margin: const EdgeInsets.all(8),
                                                         color: Colors.grey.shade400,

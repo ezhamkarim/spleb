@@ -8,6 +8,9 @@ import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/style/style.dart';
 import 'package:spleb/src/widget/custom_widget.dart';
 
+import 'generate_pdf.dart';
+import 'generate_pdf_controller.dart';
+
 class BukuLogScreenArg {
   final Projek? projek;
   final SplebUser userClicked;
@@ -69,12 +72,14 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
     return await location.getLocation();
   }
 
+  BukuLogQuality? bukuLogQuality;
   @override
   void initState() {
     super.initState();
     var blq = widget.bukuLogQuality;
     if (blq == null) return;
 
+    bukuLogQuality = blq;
     checklists = blq.checkList;
 
     approvals = blq.approval;
@@ -89,12 +94,41 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
           title: const Text('Rekod Buku Log'),
+          actions: [
+            if (bukuLogQuality != null)
+              StreamBuilder<List<Projek>>(
+                  stream: projectController.readOne(id: bukuLogQuality!.projekId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var projeks = snapshot.requireData;
+
+                      if (projeks.isEmpty) {
+                        return Container();
+                      }
+
+                      var projek = projeks.first;
+                      return IconButton(
+                          onPressed: () async {
+                            if (bukuLogQuality == null) return;
+                            var file = await GeneratePdfController.generateLogQuality(
+                                '${projek.nama}-${DateHelper.toDateOnly(bukuLogQuality?.createdAt)}', bukuLogQuality!, projek);
+
+                            await PdfController.openFile(file);
+                          },
+                          icon: const Icon(Icons.download));
+                    } else if (snapshot.hasError) {
+                      return Text('Error ${snapshot.error}');
+                    } else {
+                      return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                    }
+                  })
+          ],
         ),
         body: SizedBox(
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: widget.projek?.id),
+                stream: projectController.readOne(id: bukuLogQuality?.projekId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;
@@ -198,80 +232,133 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                     );
                                   }),
                               SizedBoxHelper.sizedboxH16,
-                              StreamBuilder<List<SplebUser>>(
-                                  stream: userController.readOnebyName(projek.namaPIC),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      // var users = snapshot.requireData;
+                              if (bukuLogQuality == null)
+                                StreamBuilder<List<SplebUser>>(
+                                    stream: userController.readOnebyName(projek.namaPIC),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        // var users = snapshot.requireData;
 
-                                      // var userPIC = users.first;
-                                      return CustomButton(
-                                          titleButton: 'Hantar',
-                                          viewState: bukuLogController.viewState,
-                                          onPressed: () async {
-                                            bool answered = true;
+                                        // var userPIC = users.first;
+                                        return CustomButton(
+                                            titleButton: 'Hantar',
+                                            viewState: bukuLogController.viewState,
+                                            onPressed: () async {
+                                              bool answered = true;
 
-                                            for (var element in checklists) {
-                                              if (element.answer == null) {
-                                                answered = false;
-                                                break;
+                                              for (var element in checklists) {
+                                                if (element.answer == null) {
+                                                  answered = false;
+                                                  break;
+                                                }
                                               }
-                                            }
 
-                                            logInfo('answered : $answered');
-                                            if (!answered) return;
-                                            var locationData = await getLocation();
-                                            logError('LOCATION DATA : $locationData');
-                                            if (locationData == null) return;
-                                            var indexPIC =
-                                                approvals.indexWhere((element) => element.title == widget.userClicked.role.name);
-                                            logInfo('Index : ${widget.userClicked.role.name}');
-                                            if (indexPIC == -1) return;
-                                            approvals[indexPIC].name = widget.userClicked.userName;
-                                            approvals[indexPIC].userId = widget.userClicked.id;
-                                            approvals[indexPIC].signedAt = DateTime.now().toString();
+                                              logInfo('answered : $answered');
+                                              if (!answered) return;
+                                              var locationData = await getLocation();
+                                              logError('LOCATION DATA : $locationData');
+                                              if (locationData == null) return;
+                                              var indexPIC = approvals
+                                                  .indexWhere((element) => element.title == widget.userClicked.role.name);
+                                              logInfo('Index : ${widget.userClicked.role.name}');
+                                              if (indexPIC == -1) return;
+                                              approvals[indexPIC].name = widget.userClicked.userName;
+                                              approvals[indexPIC].userId = widget.userClicked.id;
+                                              approvals[indexPIC].signedAt = DateTime.now().toString();
 
-                                            var blq = BukuLogQuality(
-                                                createdAt: DateTime.now().toString(),
-                                                approval: approvals,
-                                                projekId: projek.id,
-                                                id: '',
-                                                checkList: checklists);
-                                            // logInfo('${blq.toMap()}');
+                                              var blq = BukuLogQuality(
+                                                  createdAt: DateTime.now().toString(),
+                                                  approval: approvals,
+                                                  projekId: projek.id,
+                                                  id: '',
+                                                  checkList: checklists);
+                                              // logInfo('${blq.toMap()}');
 
-                                            if (widget.viewOnly) {
-                                              if (widget.bukuLogQuality != null) {
-                                                var oldblq = widget.bukuLogQuality;
+                                              if (widget.viewOnly) {
+                                                if (widget.bukuLogQuality != null) {
+                                                  var oldblq = widget.bukuLogQuality;
 
-                                                if (oldblq == null) return;
-                                                blq.id = oldblq.id;
-                                                logInfo('new blq ${blq.toMap()}');
-                                                await bukuLogController
-                                                    .update(blq)
-                                                    .then((value) => Navigator.of(context).pop())
-                                                    .catchError(
-                                                        (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                  if (oldblq == null) return;
+                                                  blq.id = oldblq.id;
+                                                  logInfo('new blq ${blq.toMap()}');
+                                                  await bukuLogController
+                                                      .update(blq)
+                                                      .then((value) => Navigator.of(context).pop())
+                                                      .catchError(
+                                                          (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                  return;
+                                                }
                                                 return;
                                               }
-                                              return;
-                                            }
-                                            await bukuLogController.create(blq).catchError(
-                                                (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                            projek.lokasiProjek =
-                                                LokasiProjek(lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
-                                            await projectController
-                                                .update(projek)
-                                                .then((value) => Navigator.of(context).pop())
-                                                .catchError(
-                                                    (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                          });
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error ${snapshot.error}');
-                                    } else {
-                                      return const Center(
-                                          child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
-                                    }
-                                  })
+                                              await bukuLogController.create(blq).catchError(
+                                                  (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                              projek.lokasiProjek = LokasiProjek(
+                                                  lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
+                                              await projectController
+                                                  .update(projek)
+                                                  .then((value) => Navigator.of(context).pop())
+                                                  .catchError(
+                                                      (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                            });
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error ${snapshot.error}');
+                                      } else {
+                                        return const Center(
+                                            child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                                      }
+                                    }),
+                              if (widget.userClicked.role.name == 'Pegawai' || widget.userClicked.role.name == 'Pengurus Projek')
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Expanded(child: Text('Nama:')),
+                                                Expanded(flex: 3, child: Text(widget.userClicked.userName))
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Expanded(child: Text('Tarikh')),
+                                                Expanded(flex: 3, child: Text(DateHelper.toDateOnly(DateTime.now().toString())))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    CustomButton(
+                                      viewState: bukuLogController.viewState,
+                                      titleButton: 'Sahkan',
+                                      onPressed: () async {
+                                        if (bukuLogQuality == null) return;
+
+                                        for (var i = 0; i < bukuLogQuality!.approval.length; i++) {
+                                          var appr = bukuLogQuality!.approval[i];
+
+                                          if (appr.title == widget.userClicked.role.name) {
+                                            bukuLogQuality!.approval[i].name = widget.userClicked.userName;
+                                            bukuLogQuality!.approval[i].signedAt = DateTime.now().toString();
+
+                                            bukuLogQuality!.approval[i].userId = widget.userClicked.id;
+                                          }
+                                        }
+                                        await bukuLogController
+                                            .update(bukuLogQuality!)
+                                            .then((value) => Navigator.of(context).pop())
+                                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                      },
+                                    ),
+                                  ],
+                                ),
                             ]))));
                   } else if (snapshot.hasError) {
                     return Text('Error ${snapshot.error}');

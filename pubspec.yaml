@@ -25,7 +25,9 @@ dependencies:
   intl: ^0.18.0
   location: ^4.4.0
   native_pdf_view: ^6.0.0+1
+  open_file: ^3.2.1
   path_provider: ^2.0.13
+  pdf: ^3.10.4
   provider: ^6.0.5
   search_page: ^2.3.0
 

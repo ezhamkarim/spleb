@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
+import 'package:spleb/src/project/log/generate_pdf.dart';
+import 'package:spleb/src/project/log/generate_pdf_controller.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
@@ -21,6 +24,7 @@ class BukuLogOSHEScreen extends StatefulWidget {
 }
 
 class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
+  String? dateToday;
   CheckOSHE? checkOSHE;
   List<ChecklistOSHE> checklistsPeralatan = [
     ChecklistOSHE(answer: null, title: 'KELENGKAPAN PERLINDUNGAN DIRI (PPE)'),
@@ -50,6 +54,8 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
 
   List<TextEditingController> teControllers = [];
   Location location = Location();
+
+  BukuLogOSHE? bukuLogOSHE;
 
   Future<LocationData?> getLocation() async {
     bool serviceEnabled;
@@ -87,6 +93,11 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
 
     if (blq == null) return;
 
+    bukuLogOSHE = blq;
+    var format = DateFormat('dd/MM/yyyy');
+
+    dateToday = format.format(DateTime.now());
+
     teControllers.clear();
 
     for (var element in blq.checklistCatatan) {
@@ -101,6 +112,11 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     checklistsPeralatan = blq.checklistPeralatan;
   }
 
+  // Future<void> makePdf() async {
+  //   final pdf = PdfDocument();
+
+  // }
+
   @override
   Widget build(BuildContext context) {
     var userController = context.watch<UserController>();
@@ -110,12 +126,41 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
           title: const Text('Rekod Buku Log OSHE'),
+          actions: [
+            if (bukuLogOSHE != null)
+              StreamBuilder<List<Projek>>(
+                  stream: projectController.readOne(id: bukuLogOSHE?.projekId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var projeks = snapshot.requireData;
+
+                      if (projeks.isEmpty) {
+                        return Container();
+                      }
+
+                      var projek = projeks.first;
+                      return IconButton(
+                          onPressed: () async {
+                            if (bukuLogOSHE == null) return;
+                            var file = await GeneratePdfController.generateLogOSHE(
+                                '${projek.nama}-${DateHelper.toDateOnly(bukuLogOSHE?.createdAt)}', bukuLogOSHE!, projek);
+
+                            await PdfController.openFile(file);
+                          },
+                          icon: const Icon(Icons.download));
+                    } else if (snapshot.hasError) {
+                      return Text('Error ${snapshot.error}');
+                    } else {
+                      return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                    }
+                  })
+          ],
         ),
         body: SizedBox(
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: widget.projek?.id),
+                stream: projectController.readOne(id: bukuLogOSHE?.projekId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;
@@ -309,152 +354,206 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
                                                 controller: teController,
                                                 hintText: 'Catatan',
                                                 isObscure: false,
-                                                isEnabled: true)
+                                                isEnabled: bukuLogOSHE == null ? true : false)
                                           ],
                                         ),
                                       ),
                                     );
                                   }),
                               SizedBoxHelper.sizedboxH16,
-                              Card(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'PERAKUAN SPV',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBoxHelper.sizedboxH16,
-                                    const Text(
-                                      'Berdasarkan semakan dokumen dan pemerhatian fizikal di tapak, saya dengan ini mengesahkan',
-                                    ),
-                                    SizedBoxHelper.sizedboxH16,
-                                    Row(
-                                      children: [
-                                        const Expanded(child: Text('Kerja tersebut boleh dimulakan / diteruskan.')),
-                                        Radio<CheckOSHE>(
-                                            value: CheckOSHE.dimulakan,
-                                            groupValue: checkOSHE,
-                                            onChanged: (val) {
-                                              if (val == null) return;
+                              if (widget.bukuLogOSHE == null)
+                                Card(
+                                    child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'PERAKUAN SPV',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBoxHelper.sizedboxH16,
+                                      const Text(
+                                        'Berdasarkan semakan dokumen dan pemerhatian fizikal di tapak, saya dengan ini mengesahkan',
+                                      ),
+                                      SizedBoxHelper.sizedboxH16,
+                                      Row(
+                                        children: [
+                                          const Expanded(child: Text('Kerja tersebut boleh dimulakan / diteruskan.')),
+                                          Radio<CheckOSHE>(
+                                              value: CheckOSHE.dimulakan,
+                                              groupValue: checkOSHE,
+                                              onChanged: (val) {
+                                                if (val == null) return;
 
-                                              setState(() {
-                                                checkOSHE = val;
-                                              });
-                                            })
-                                      ],
-                                    ),
-                                    SizedBoxHelper.sizedboxH16,
-                                    Row(
-                                      children: [
-                                        const Expanded(
-                                            child: Text(
-                                                'Pemberhentian kerja tersebut serta merta. (Kerja hanya boleh dimulakan / disambung setelah tindakan pembaikan dibuat)')),
-                                        Radio<CheckOSHE>(
-                                            value: CheckOSHE.dihentikan,
-                                            groupValue: checkOSHE,
-                                            onChanged: (val) {
-                                              if (val == null) return;
+                                                setState(() {
+                                                  checkOSHE = val;
+                                                });
+                                              })
+                                        ],
+                                      ),
+                                      SizedBoxHelper.sizedboxH16,
+                                      Row(
+                                        children: [
+                                          const Expanded(
+                                              child: Text(
+                                                  'Pemberhentian kerja tersebut serta merta. (Kerja hanya boleh dimulakan / disambung setelah tindakan pembaikan dibuat)')),
+                                          Radio<CheckOSHE>(
+                                              value: CheckOSHE.dihentikan,
+                                              groupValue: checkOSHE,
+                                              onChanged: (val) {
+                                                if (val == null) return;
 
-                                              setState(() {
-                                                checkOSHE = val;
-                                              });
-                                            })
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                              StreamBuilder<List<SplebUser>>(
-                                  stream: userController.readOnebyName(projek.namaPIC),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      // var users = snapshot.requireData;
+                                                setState(() {
+                                                  checkOSHE = val;
+                                                });
+                                              })
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )),
+                              if (widget.bukuLogOSHE == null)
+                                StreamBuilder<List<SplebUser>>(
+                                    stream: userController.readOnebyName(projek.namaPIC),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        // var users = snapshot.requireData;
 
-                                      // var user = users.first;
-                                      return CustomButton(
-                                          viewState: bukuLogOSHEController.viewState,
-                                          titleButton: 'Hantar',
-                                          onPressed: checkOSHE == null
-                                              ? null
-                                              : () async {
-                                                  bool answered = true;
-                                                  bool answeredPeralatan = true;
+                                        // var user = users.first;
+                                        return CustomButton(
+                                            viewState: bukuLogOSHEController.viewState,
+                                            titleButton: 'Hantar',
+                                            onPressed: checkOSHE == null
+                                                ? null
+                                                : () async {
+                                                    bool answered = true;
+                                                    bool answeredPeralatan = true;
 
-                                                  for (var element in checklists) {
-                                                    if (element.answer == null) {
-                                                      answered = false;
-                                                      break;
+                                                    for (var element in checklists) {
+                                                      if (element.answer == null) {
+                                                        answered = false;
+                                                        break;
+                                                      }
                                                     }
-                                                  }
 
-                                                  for (var element in checklistsPeralatan) {
-                                                    if (element.answer == null) {
-                                                      answeredPeralatan = false;
-                                                      break;
+                                                    for (var element in checklistsPeralatan) {
+                                                      if (element.answer == null) {
+                                                        answeredPeralatan = false;
+                                                        break;
+                                                      }
                                                     }
-                                                  }
-                                                  logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
-                                                  if (!answered || !answeredPeralatan) return;
+                                                    logInfo('answered : $answered, answeredPeralatan : $answeredPeralatan');
+                                                    if (!answered || !answeredPeralatan) return;
 
-                                                  var index = approvals
-                                                      .indexWhere((element) => element.title == widget.userClicked.role.name);
+                                                    var index = approvals
+                                                        .indexWhere((element) => element.title == widget.userClicked.role.name);
 
-                                                  if (index == -1) return;
-                                                  approvals[index].name = widget.userClicked.userName;
-                                                  approvals[index].userId = widget.userClicked.id;
-                                                  approvals[index].signedAt = DateTime.now().toString();
+                                                    if (index == -1) return;
+                                                    approvals[index].name = widget.userClicked.userName;
+                                                    approvals[index].userId = widget.userClicked.id;
+                                                    approvals[index].signedAt = DateTime.now().toString();
 
-                                                  var locationData = await getLocation();
-                                                  logError('LOCATION DATA : $locationData');
-                                                  if (locationData == null) return;
+                                                    var locationData = await getLocation();
+                                                    logError('LOCATION DATA : $locationData');
+                                                    if (locationData == null) return;
 
-                                                  var blqoshe = BukuLogOSHE(
-                                                      projekId: projek.id,
-                                                      id: '',
-                                                      createdAt: DateTime.now().toString(),
-                                                      checklistPeralatan: checklistsPeralatan,
-                                                      checklist: checklists,
-                                                      approval: approvals,
-                                                      checklistCatatan: catatanLists,
-                                                      lat: locationData.latitude ?? 0,
-                                                      long: locationData.longitude ?? 0);
-                                                  if (widget.viewOnly) {
-                                                    if (widget.bukuLogOSHE != null) {
-                                                      var oldblq = widget.bukuLogOSHE;
+                                                    var blqoshe = BukuLogOSHE(
+                                                        projekId: projek.id,
+                                                        id: '',
+                                                        createdAt: DateTime.now().toString(),
+                                                        checklistPeralatan: checklistsPeralatan,
+                                                        checklist: checklists,
+                                                        approval: approvals,
+                                                        checklistCatatan: catatanLists,
+                                                        lat: locationData.latitude ?? 0,
+                                                        long: locationData.longitude ?? 0);
+                                                    if (widget.viewOnly) {
+                                                      if (widget.bukuLogOSHE != null) {
+                                                        var oldblq = widget.bukuLogOSHE;
 
-                                                      if (oldblq == null) return;
-                                                      blqoshe.id = oldblq.id;
-                                                      logInfo('new blq ${blqoshe.toMap()}');
-                                                      await bukuLogOSHEController
-                                                          .update(blqoshe)
-                                                          .then((value) => Navigator.of(context).pop())
-                                                          .catchError((e) =>
-                                                              DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                        if (oldblq == null) return;
+                                                        blqoshe.id = oldblq.id;
+                                                        logInfo('new blq ${blqoshe.toMap()}');
+                                                        await bukuLogOSHEController
+                                                            .update(blqoshe)
+                                                            .then((value) => Navigator.of(context).pop())
+                                                            .catchError((e) =>
+                                                                DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                        return;
+                                                      }
                                                       return;
                                                     }
-                                                    return;
-                                                  }
-                                                  await bukuLogOSHEController.create(blqoshe).catchError(
-                                                      (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                                  logError('Projek : ${projek.toMap()}');
-                                                  projek.lokasiProjek = LokasiProjek(
-                                                      lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
-                                                  await projectController
-                                                      .update(projek)
-                                                      .then((value) => Navigator.of(context).pop())
-                                                      .catchError(
-                                                          (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
-                                                });
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error ${snapshot.error}');
-                                    } else {
-                                      return const Center(
-                                          child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
-                                    }
-                                  })
+                                                    await bukuLogOSHEController.create(blqoshe).catchError(
+                                                        (e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                    logError('Projek : ${projek.toMap()}');
+                                                    projek.lokasiProjek = LokasiProjek(
+                                                        lat: locationData.latitude ?? 0, lang: locationData.longitude ?? 0);
+                                                    await projectController
+                                                        .update(projek)
+                                                        .then((value) => Navigator.of(context).pop())
+                                                        .catchError((e) =>
+                                                            DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                                  });
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error ${snapshot.error}');
+                                      } else {
+                                        return const Center(
+                                            child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                                      }
+                                    }),
+                              if (widget.userClicked.role.name == 'Pegawai' || widget.userClicked.role.name == 'Pengurus Projek')
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Expanded(child: Text('Nama:')),
+                                                Expanded(flex: 3, child: Text(widget.userClicked.userName))
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Expanded(child: Text('Tarikh')),
+                                                Expanded(flex: 3, child: Text(dateToday ?? ''))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    CustomButton(
+                                      viewState: bukuLogOSHEController.viewState,
+                                      titleButton: 'Sahkan',
+                                      onPressed: () async {
+                                        if (bukuLogOSHE == null) return;
+
+                                        for (var i = 0; i < bukuLogOSHE!.approval.length; i++) {
+                                          var appr = bukuLogOSHE!.approval[i];
+
+                                          if (appr.title == widget.userClicked.role.name) {
+                                            bukuLogOSHE!.approval[i].name = widget.userClicked.userName;
+                                            bukuLogOSHE!.approval[i].signedAt = DateTime.now().toString();
+
+                                            bukuLogOSHE!.approval[i].userId = widget.userClicked.id;
+                                          }
+                                        }
+                                        await bukuLogOSHEController
+                                            .update(bukuLogOSHE!)
+                                            .then((value) => Navigator.of(context).pop())
+                                            .catchError((e) => DialogHelper.dialogWithOutActionWarning(context, e.toString()));
+                                      },
+                                    ),
+                                  ],
+                                ),
                             ]))));
                   } else if (snapshot.hasError) {
                     return Text('Error ${snapshot.error}');
