@@ -42,7 +42,7 @@ class _UrusProjekState extends State<UrusProjek> {
                       titleButton: 'Daftar Projek',
                       onPressed: () async {
                         // OpenFile.open('assets/pdf/panduan.pdf');
-                        Navigator.of(context).pushNamed(DaftarProjek.routeName);
+                        Navigator.of(context).pushNamed(DaftarProjek.routeName, arguments: DaftarProjekArg(false, null, null));
                       }),
                 if (widget.splebUser.role.name == 'Pegawai') SizedBoxHelper.sizedboxH16,
                 if (widget.splebUser.role.name == 'Pengurus Projek')
