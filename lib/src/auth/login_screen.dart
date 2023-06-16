@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailTextController = TextEditingController(text: 'admin@spleb.com');
+  final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController(text: 'Spleb1234');
 
   final _formKey = GlobalKey<FormState>();
@@ -46,8 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(
                           width: SizeConfig(context).scaledWidth(widthScale: 0.5),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Expanded(
                                 child: Text(
                                   'Sistem Buku Log Elektronik Penyeliaan',
