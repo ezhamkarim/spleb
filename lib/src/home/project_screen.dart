@@ -114,61 +114,59 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       width: SizeConfig(context).scaledWidth(),
                       child: Padding(
                           padding: const EdgeInsets.all(24.0),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                            StreamBuilder<List<Projek>>(
-                                stream: projectController.read(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: snapshot.requireData.length,
-                                        itemBuilder: (c, i) {
-                                          var projek = snapshot.requireData[i];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed(ProjectScreenViewOnly.routeName,
-                                                  arguments: ProjectScreenArg(projek.id, splebUser));
-                                            },
-                                            child: Card(
-                                              color: Colors.grey.shade300,
-                                              margin: const EdgeInsets.all(8),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(24.0),
-                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(child: Text('${projek.nama} (${projek.namaPIC})')),
-                                                      Chip(
-                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                          visualDensity: VisualDensity.compact,
-                                                          backgroundColor: ProjekHelper.getColorsStatusBg(projek.statusProjek),
-                                                          label: Text(
-                                                            projek.statusProjek,
-                                                          ))
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                          child: Text(projek.lokasiProjek == null
-                                                              ? 'Tiada Lokasi'
-                                                              : projek.lokasiProjek.toString())),
-                                                      IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_right))
-                                                    ],
-                                                  )
-                                                ]),
-                                              ),
+                          child: StreamBuilder<List<Projek>>(
+                              stream: projectController.read(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                      physics: const ClampingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.requireData.length,
+                                      itemBuilder: (c, i) {
+                                        var projek = snapshot.requireData[i];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(ProjectScreenViewOnly.routeName,
+                                                arguments: ProjectScreenArg(projek.id, splebUser));
+                                          },
+                                          child: Card(
+                                            color: Colors.grey.shade300,
+                                            margin: const EdgeInsets.all(8),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(24.0),
+                                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(child: Text('${projek.nama} (${projek.namaPIC})')),
+                                                    Chip(
+                                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                        visualDensity: VisualDensity.compact,
+                                                        backgroundColor: ProjekHelper.getColorsStatusBg(projek.statusProjek),
+                                                        label: Text(
+                                                          projek.statusProjek,
+                                                        ))
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                        child: Text(projek.lokasiProjek == null
+                                                            ? 'Tiada Lokasi'
+                                                            : projek.lokasiProjek.toString())),
+                                                    IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_right))
+                                                  ],
+                                                )
+                                              ]),
                                             ),
-                                          );
-                                        });
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error ${snapshot.error}');
-                                  } else {
-                                    return const Center(
-                                        child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
-                                  }
-                                })
-                          ])))),
+                                          ),
+                                        );
+                                      });
+                                } else if (snapshot.hasError) {
+                                  return Text('Error ${snapshot.error}');
+                                } else {
+                                  return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
+                                }
+                              })))),
             );
           } else if (snapshot.hasError) {
             return Text('Error ${snapshot.error}');
