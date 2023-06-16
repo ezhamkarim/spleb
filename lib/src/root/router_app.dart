@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spleb/src/auth/auth_wrapper.dart';
 import 'package:spleb/src/model/models.dart';
-import 'package:spleb/src/project/issue/issue_list_screen.dart';
 
 import 'screens.dart';
 
@@ -37,7 +36,9 @@ class RouterApp {
                 viewOnly: arg.viewOnly,
                 bukuLogOSHE: arg.bukuLogOSHE,
               );
-
+            case IssueScreen.routeName:
+              var issue = routeSettings.arguments as Issue;
+              return IssueScreen(issue: issue);
             case BukuLogListScreen.routeName:
               var arg = routeSettings.arguments as BukuLogListArg;
               return BukuLogListScreen(

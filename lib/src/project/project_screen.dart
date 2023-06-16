@@ -217,22 +217,22 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                         Navigator.of(context).pushNamed(BukuLogOSHEScreen.routeName,
                                             arguments: BukuLogScreenArg(projek, widget.currentUser, null, null));
                                       }),
-                                if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
-                                if (widget.currentUser.role.name == 'Pengurus Projek')
-                                  CustomButton(
-                                      titleButton: 'Semak Buku Log',
-                                      onPressed: () {
-                                        Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
-                                            arguments: BukuLogListArg(ShowBook.quality, projek));
-                                      }),
-                                if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
-                                if (widget.currentUser.role.name == 'Pengurus Projek')
-                                  CustomButton(
-                                      titleButton: 'Semak Buku Log OSHE',
-                                      onPressed: () {
-                                        Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
-                                            arguments: BukuLogListArg(ShowBook.oshe, projek));
-                                      }),
+                                // if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
+                                // if (widget.currentUser.role.name == 'Pengurus Projek')
+                                //   CustomButton(
+                                //       titleButton: 'Semak Buku Log',
+                                //       onPressed: () {
+                                //         Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
+                                //             arguments: BukuLogListArg(ShowBook.quality, projek));
+                                //       }),
+                                // if (widget.currentUser.role.name == 'Pengurus Projek') SizedBoxHelper.sizedboxH16,
+                                // if (widget.currentUser.role.name == 'Pengurus Projek')
+                                //   CustomButton(
+                                //       titleButton: 'Semak Buku Log OSHE',
+                                //       onPressed: () {
+                                //         Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
+                                //             arguments: BukuLogListArg(ShowBook.oshe, projek));
+                                //       }),
                                 SizedBoxHelper.sizedboxH16,
                                 CustomButton(
                                     titleButton: 'Isu semasa',

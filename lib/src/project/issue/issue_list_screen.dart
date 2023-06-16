@@ -75,7 +75,11 @@ class _IssueListScreenState extends State<IssueListScreen> {
                                     margin: const EdgeInsets.all(8),
                                     color: Colors.grey.shade400,
                                     child: ListTile(
-                                      onTap: () {},
+                                      onTap: () {
+                                        //TODO : Add issue screen
+
+                                        Navigator.of(context).pushNamed(IssueScreen.routeName, arguments: isu);
+                                      },
                                       leading: Text('$no'),
                                       title: Text(isu.name),
                                     ),
@@ -97,5 +101,30 @@ class _IssueListScreenState extends State<IssueListScreen> {
             return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator()));
           }
         });
+  }
+}
+
+class IssueScreen extends StatefulWidget {
+  const IssueScreen({super.key, required this.issue});
+  final Issue issue;
+  static const routeName = '/issue-screen';
+  @override
+  State<IssueScreen> createState() => _IssueScreenState();
+}
+
+class _IssueScreenState extends State<IssueScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Issue : ${widget.issue.name}'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [const Text('Description'), SizedBoxHelper.sizedboxH16, Text(widget.issue.description)],
+        ),
+      ),
+    );
   }
 }

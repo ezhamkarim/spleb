@@ -33,6 +33,7 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
     var bukuLogOSHEController = context.watch<BukuLogOSHEController>();
     var bukuLogController = context.watch<BukuLogController>();
     var userController = context.watch<UserController>();
+    var projectController = context.watch<ProjectController>();
     var fbUser = context.watch<User?>();
     if (fbUser == null) {
       return const Center(
@@ -252,7 +253,26 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                                                     viewOnly: true));
                                                           },
                                                           leading: Text('$no'),
-                                                          title: Text(bukuLog.id),
+                                                          title: StreamBuilder<List<Projek>>(
+                                                              stream: projectController.readOne(id: bukuLog.projekId),
+                                                              builder: (context, snapshot) {
+                                                                if (snapshot.hasData) {
+                                                                  var projeks = snapshot.requireData;
+
+                                                                  if (projeks.isEmpty) return const Text('');
+
+                                                                  var pro = projeks.first;
+                                                                  return Text(pro.nama);
+                                                                } else if (snapshot.hasError) {
+                                                                  return Text('Error ${snapshot.error}');
+                                                                } else {
+                                                                  return const Center(
+                                                                      child: SizedBox(
+                                                                          height: 20,
+                                                                          width: 20,
+                                                                          child: CircularProgressIndicator()));
+                                                                }
+                                                              }),
                                                         ),
                                                       );
                                                     });
@@ -290,7 +310,26 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                                                     viewOnly: true));
                                                           },
                                                           leading: Text('$no'),
-                                                          title: Text(bukuLog.id),
+                                                          title: StreamBuilder<List<Projek>>(
+                                                              stream: projectController.readOne(id: bukuLog.projekId),
+                                                              builder: (context, snapshot) {
+                                                                if (snapshot.hasData) {
+                                                                  var projeks = snapshot.requireData;
+
+                                                                  if (projeks.isEmpty) return const Text('');
+
+                                                                  var pro = projeks.first;
+                                                                  return Text(pro.nama);
+                                                                } else if (snapshot.hasError) {
+                                                                  return Text('Error ${snapshot.error}');
+                                                                } else {
+                                                                  return const Center(
+                                                                      child: SizedBox(
+                                                                          height: 20,
+                                                                          width: 20,
+                                                                          child: CircularProgressIndicator()));
+                                                                }
+                                                              }),
                                                         ),
                                                       );
                                                     });
