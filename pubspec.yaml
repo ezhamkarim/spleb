@@ -21,6 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.1.15
+  flutter_secure_storage: ^8.0.0
   font_awesome_flutter: ^10.4.0
   intl: ^0.18.0
   location: ^4.4.0
@@ -30,6 +31,7 @@ dependencies:
   pdf: ^3.10.4
   provider: ^6.0.5
   search_page: ^2.3.0
+  syncfusion_flutter_pdf: ^21.2.9
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
