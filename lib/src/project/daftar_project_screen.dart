@@ -228,65 +228,6 @@ class _DaftarProjekState extends State<DaftarProjek> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Status Projek'),
-                          ),
-                          SizedBoxHelper.sizedboxH8,
-                          Column(
-                            children: statusAktivitis
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-                                      child: Row(
-                                        children: [
-                                          const Text('- '),
-                                          Text(
-                                            e,
-                                            style: const TextStyle(fontWeight: FontWeight.w400),
-                                          ),
-                                          IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  statusAktivitis.removeWhere((element) => element == e);
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.delete,
-                                                color: Colors.red,
-                                              ))
-                                        ],
-                                      ),
-                                    ))
-                                .toList(),
-                          )
-                        ],
-                      ),
-                      SizedBoxHelper.sizedboxH8,
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CustomTextField(
-                                color: CustomColor.primary,
-                                controller: newAktivitiTextController,
-                                hintText: 'Aktiviti',
-                                validator: (p0) => null,
-                                isObscure: false,
-                                isEnabled: true),
-                            SizedBoxHelper.sizedboxH8,
-                            ElevatedButton(
-                              onPressed: addStatusAktiviti,
-                              style: ElevatedButton.styleFrom(backgroundColor: CustomColor.primary),
-                              child: const Text('Add new aktiviti'),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBoxHelper.sizedboxH16,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0),
                             child: Text(
                               'Aktiviti Sekarang/Status Projek',
                             ),
