@@ -89,10 +89,6 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                       child: CustomButton(
                           titleButton: 'BUKU PANDUAN BEKERJA DI ATAS TALIAN',
                           onPressed: () async {
-                            //TODO: Guna password dari login
-
-                            // OpenFile.open('assets/pdf/panduan.pdf');
-
                             syncPdf.PdfDocument document = syncPdf.PdfDocument(
                               inputBytes: await _readDocumentDataFromAsset('pdf/panduan-2.pdf'),
                             );
