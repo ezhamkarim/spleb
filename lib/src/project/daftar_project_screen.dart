@@ -352,7 +352,7 @@ class _DaftarProjekState extends State<DaftarProjek> {
                       SizedBoxHelper.sizedboxH16,
                       CustomButton(
                           viewState: projectController.viewState,
-                          titleButton: 'Register',
+                          titleButton: 'Daftarkan Projek',
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               if (widget.isEdit) {

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:spleb/src/helper/helper.dart';
 import 'package:spleb/src/helper/log_helper.dart';
 import 'package:spleb/src/model/models.dart';
-import 'package:spleb/src/project/issue/issue_list_screen.dart';
 import 'package:spleb/src/root/controllers.dart';
 import 'package:spleb/src/root/screens.dart';
 import 'package:spleb/src/style/style.dart';
@@ -245,7 +244,6 @@ class _ProjectScreenViewOnlyState extends State<ProjectScreenViewOnly> {
                                     onPressed: () {
                                       Navigator.of(context).pushNamed(TambahLampiran.routeName, arguments: projek);
                                     }),
-                                //TODO: Add lampiran
                               ],
                             )))));
           } else if (snapshot.hasError) {

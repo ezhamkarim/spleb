@@ -13,6 +13,7 @@ import 'settings/settings_controller.dart';
 /// The Widget that configures your application.
 
 //TODO: Guna semua nama button bahasa melayu
+//TODO: Clearkan comment yang tak pakai
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,

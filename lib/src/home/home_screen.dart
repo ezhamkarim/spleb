@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         // SizedBoxHelper.sizedboxH32,
                         // if (splebUser.role.name == 'Pengurus')
                         //   CustomButton(
-                        //       titleButton: 'Register User',
+                        //       titleButton: 'Daftar Pengguna',
                         //       onPressed: () async {
                         //         Navigator.of(context).pushNamed(RegisterScreen.routeName);
                         //       }),

@@ -59,7 +59,7 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                   backgroundColor: CustomColor.primary,
                   title: widget.showBook == ShowBook.oshe
                       ? Text('Buku Log OSHE ${widget.projek?.nama ?? ''}')
-                      : Text('Buku Log ${widget.projek?.nama ?? ''}'),
+                      : Text('Buku Log Quality${widget.projek?.nama ?? ''}'),
                   actions: [
                     if (widget.showBook == ShowBook.oshe)
                       StreamBuilder<List<BukuLogOSHE>>(
@@ -222,16 +222,6 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 var bukulogs = snapshot.requireData;
-                                                if (splebUser.role.name == 'Pengurus Projek' ||
-                                                    splebUser.role.name == 'Pegawai') {
-                                                  bukulogs.removeWhere((element) {
-                                                    var list =
-                                                        element.approval.where((element) => element.userId == splebUser.id);
-                                                    logError('list.isEmpty = ${list.isEmpty}');
-                                                    if (list.isEmpty) return false;
-                                                    return true;
-                                                  });
-                                                }
                                                 if (bukulogs.isEmpty) return const Text('Tiada Buku Log OSHE');
                                                 logError('buku logs OSHE:$bukulogs');
                                                 return ListView.builder(
@@ -345,14 +335,14 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
                                             CustomButton(
-                                                titleButton: 'OSHE',
+                                                titleButton: 'Senarai OSHE',
                                                 onPressed: () {
                                                   Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
                                                       arguments: BukuLogListArg(ShowBook.oshe, widget.projek));
                                                 }),
                                             SizedBoxHelper.sizedboxH16,
                                             CustomButton(
-                                                titleButton: 'Quality',
+                                                titleButton: 'Senarai Quality',
                                                 onPressed: () {
                                                   Navigator.of(context).pushNamed(BukuLogListScreen.routeName,
                                                       arguments: BukuLogListArg(ShowBook.quality, widget.projek));

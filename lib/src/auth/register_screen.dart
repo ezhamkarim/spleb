@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColor.primary,
-        title: const Text('Register User'),
+        title: const Text('Daftar Pengguna'),
       ),
       body: SingleChildScrollView(
         child: SizedBox(
@@ -146,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBoxHelper.sizedboxH32,
                   CustomButton(
                       viewState: authService.viewState,
-                      titleButton: 'Register',
+                      titleButton: 'Daftarkan Pengguna',
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           var splebUser = SplebUser(

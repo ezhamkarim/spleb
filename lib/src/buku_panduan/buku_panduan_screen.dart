@@ -58,7 +58,7 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                               _launchPdf(bytes, 'secured.pdf');
                               return;
                             }
-                            _showDialog(document);
+                            _showDialog(document, 'secured.pdf');
 
                             // Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan.pdf');
                           }),
@@ -83,17 +83,57 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                   ],
                 ),
                 SizedBoxHelper.sizedboxH16,
-                CustomButton(
-                    titleButton: 'BUKU PANDUAN BEKERJA DI ATAS TALIAN',
-                    onPressed: () async {
-                      // OpenFile.open('assets/pdf/panduan.pdf');
-                      Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan-2.pdf');
-                    })
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                          titleButton: 'BUKU PANDUAN BEKERJA DI ATAS TALIAN',
+                          onPressed: () async {
+                            //TODO: Guna password dari login
+
+                            // OpenFile.open('assets/pdf/panduan.pdf');
+
+                            syncPdf.PdfDocument document = syncPdf.PdfDocument(
+                              inputBytes: await _readDocumentDataFromAsset('pdf/panduan-2.pdf'),
+                            );
+
+                            var pw = await SecureStorageService.read('pw-2');
+
+                            if (pw != null) {
+                              var bytes = await _readDocumentData('secured-2.pdf');
+
+                              if (bytes == null) return;
+                              _launchPdf(bytes, 'secured-2.pdf');
+                              return;
+                            }
+                            _showDialog(document, 'secured-2.pdf');
+                            // Navigator.of(context).pushNamed(PdfApp.routeName, arguments: 'assets/pdf/panduan-2.pdf');
+                          }),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          DialogHelper.dialogWithAction(context, 'Amaran', 'Adakah anda pasti untuk decrypt fail ini?',
+                              onPressed: () async {
+                            var pw = await SecureStorageService.read('pw-2');
+
+                            if (pw == null) return;
+
+                            syncPdf.PdfDocument document =
+                                syncPdf.PdfDocument(inputBytes: await _readDocumentData('secured-2.pdf'), password: pw);
+                            syncPdf.PdfSecurity security = document.security;
+                            security.userPassword = '';
+
+                            SecureStorageService.delete('pw-2');
+                          });
+                        },
+                        icon: const Icon(Icons.more_vert))
+                  ],
+                )
               ]),
             ))));
   }
 
-  void _showDialog(syncPdf.PdfDocument document) {
+  void _showDialog(syncPdf.PdfDocument document, String docname) {
     showDialog<bool>(
         barrierDismissible: false,
         context: context,
@@ -107,7 +147,13 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                 children: [
                   const Text('Sila masukkan password'),
                   SizedBoxHelper.sizedboxH32,
-                  CustomTextField(controller: pwController, hintText: 'Password', isObscure: true, isEnabled: true)
+                  CustomTextField(
+                    controller: pwController,
+                    hintText: 'Password',
+                    isObscure: true,
+                    isEnabled: true,
+                    color: CustomColor.primary,
+                  )
                 ],
               ),
             ),
@@ -127,9 +173,13 @@ class _BukuPanduanScreenState extends State<BukuPanduanScreen> {
                     List<int> bytes = await document.save();
                     document.dispose();
 
-                    SecureStorageService.write('pw', pwController.text);
+                    if (docname == 'secure.pdf') {
+                      SecureStorageService.write('pw', pwController.text);
+                    } else {
+                      SecureStorageService.write('pw-2', pwController.text);
+                    }
 
-                    _launchPdf(bytes, 'secured.pdf');
+                    _launchPdf(bytes, docname);
                     pwController.clear();
                     Navigator.of(context).pop();
                   }

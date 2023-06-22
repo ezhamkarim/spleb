@@ -76,8 +76,6 @@ class _IssueListScreenState extends State<IssueListScreen> {
                                     color: Colors.grey.shade400,
                                     child: ListTile(
                                       onTap: () {
-                                        //TODO : Add issue screen
-
                                         Navigator.of(context).pushNamed(IssueScreen.routeName, arguments: isu);
                                       },
                                       leading: Text('$no'),
