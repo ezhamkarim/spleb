@@ -251,7 +251,11 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
 
                                                                   if (projeks.isEmpty) return const Text('');
 
-                                                                  var pro = projeks.first;
+                                                                  var pros = projeks
+                                                                      .where((element) => element.id == bukuLog.projekId)
+                                                                      .toList();
+                                                                  if (pros.isEmpty) return const Text('Error');
+                                                                  var pro = pros.first;
                                                                   return Text(pro.nama);
                                                                 } else if (snapshot.hasError) {
                                                                   return Text('Error ${snapshot.error}');
@@ -308,7 +312,11 @@ class _BukuLogListScreenState extends State<BukuLogListScreen> {
 
                                                                   if (projeks.isEmpty) return const Text('');
 
-                                                                  var pro = projeks.first;
+                                                                  var pros = projeks
+                                                                      .where((element) => element.id == bukuLog.projekId)
+                                                                      .toList();
+                                                                  if (pros.isEmpty) return const Text('Error');
+                                                                  var pro = pros.first;
                                                                   return Text(pro.nama);
                                                                 } else if (snapshot.hasError) {
                                                                   return Text('Error ${snapshot.error}');
