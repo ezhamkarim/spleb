@@ -94,6 +94,9 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     if (blq == null) return;
 
     bukuLogOSHE = blq;
+
+    logError('Project ID: ${bukuLogOSHE?.projekId}');
+    logError('Id : ${widget.projek}');
     var format = DateFormat('dd/MM/yyyy');
 
     dateToday = format.format(DateTime.now());
@@ -122,6 +125,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
     var userController = context.watch<UserController>();
     var projectController = context.watch<ProjectController>();
     var bukuLogOSHEController = context.watch<BukuLogOSHEController>();
+    var id = widget.projek == null ? bukuLogOSHE?.projekId : widget.projek?.id;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
@@ -129,7 +133,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
           actions: [
             if (bukuLogOSHE != null)
               StreamBuilder<List<Projek>>(
-                  stream: projectController.readOne(id: bukuLogOSHE?.projekId),
+                  stream: projectController.readOne(id: id),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var projeks = snapshot.requireData;
@@ -160,7 +164,7 @@ class _BukuLogOSHEScreenState extends State<BukuLogOSHEScreen> {
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: bukuLogOSHE?.projekId),
+                stream: projectController.readOne(id: id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;

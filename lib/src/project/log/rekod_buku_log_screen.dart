@@ -90,6 +90,8 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
     var userController = context.watch<UserController>();
     var projectController = context.watch<ProjectController>();
     var bukuLogController = context.watch<BukuLogController>();
+
+    var id = widget.projek == null ? bukuLogQuality?.projekId : widget.projek?.id;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
@@ -97,7 +99,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
           actions: [
             if (bukuLogQuality != null)
               StreamBuilder<List<Projek>>(
-                  stream: projectController.readOne(id: bukuLogQuality!.projekId),
+                  stream: projectController.readOne(id: id),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var projeks = snapshot.requireData;
@@ -128,7 +130,7 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
             height: SizeConfig(context).scaledHeight(),
             width: SizeConfig(context).scaledWidth(),
             child: StreamBuilder<List<Projek>>(
-                stream: projectController.readOne(id: bukuLogQuality?.projekId),
+                stream: projectController.readOne(id: id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var projeks = snapshot.requireData;
@@ -150,12 +152,13 @@ class _BukuLogScreenState extends State<BukuLogScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             'Nama : ',
                                             style: TextStyle(fontWeight: FontWeight.bold),
                                           ),
-                                          Text(projek.nama),
+                                          Expanded(child: Text(projek.nama)),
                                         ],
                                       ),
                                       SizedBoxHelper.sizedboxH8,
